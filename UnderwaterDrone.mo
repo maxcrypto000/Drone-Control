@@ -1,45 +1,133 @@
 model UnderwaterDrone
-  // Parametri di base
+  parameter Integer N = 4 "Numero totale di droni";
   parameter Real m = 15.0 "Massa (kg)";
   parameter Real kd = 5.0 "Coefficiente di attrito quadratico dell'acqua";
   parameter Real c1 = 0.5 "Consumo base (elettronica)";
   parameter Real c2 = 0.1 "Fattore di consumo proporzionale allo sforzo dei motori";
   
-  // Variabili di stato (Cinematica ed Energia)
-  Real x(start=0.0), y(start=0.0), z(start=0.0) "Coordinate spaziali (m)";
-  Real vx(start=0.0), vy(start=0.0), vz(start=0.0) "Velocità sui tre assi (m/s)";
-  Real v_norm "Modulo della velocità assoluta";
-  Real B(start=100.0) "Livello batteria (%)";
+  // Variabili di stato
+  Real x(start=0.0, fixed=true), y(start=0.0, fixed=true), z(start=0.0, fixed=true);
+  Real vx(start=0.0, fixed=true), vy(start=0.0, fixed=true), vz(start=0.0, fixed=true);
+  Real v_norm;
+  Real B(start=100.0, fixed=true);
   
-  // INPUT DAL CONTROLLORE (Il codice C)
-  input Real ux "Comando di spinta asse X richiesto dal C";
-  input Real uy "Comando di spinta asse Y richiesto dal C";
-  input Real uz "Comando di spinta asse Z richiesto dal C";
-  input Boolean is_failed "Segnale di avaria hardware (True = motori guasti)";
+  // MESSAGGI IN INGRESSO DALLA RETE
+  input Integer drone_index "Indice di questo drone (1..N)";
+  input Real swarm_x[N];
+  input Real swarm_y[N];
+  input Real swarm_z[N];
+  input Boolean is_failed "Segnale di avaria hardware";
+  input Real base_x "Coordinata X stazione ricarica assegnata";
+  input Real base_y "Coordinata Y stazione ricarica assegnata";
+  input Real base_z "Coordinata Z stazione ricarica assegnata";
   
-  // Variabili interne per la logica hardware
-  Boolean is_active "Stato vitale del drone (True se ha batteria e non è guasto)";
-  Real ux_eff, uy_eff, uz_eff "Spinta EFFETTIVA erogata dai motori";
-  
-  // Animazione 3D del Drone
-  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape drone_vis(
-    shapeType="sphere",
-    color={255, 50, 50}, // Colore rosso per distinguerli facilmente
-    length=1.5, width=1.5, height=1.5,
-    r={x, y, z}
+  parameter Real R_base = 2.0 "Raggio di ricarica (m)";
+  parameter Real charge_rate = 10.0 "Velocità di ricarica (%/s)";
+
+  // Oggetto 3D per l'animazione (sfera rossa)
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape drone_shape(
+    shapeType="sphere", color={255, 0, 0}, length=1.0, width=1.0, height=1.0, r_shape={x, y, z}
   );
+
+  // MEMORIA INTERNA (Pacchetti di rete ricevuti)
+  discrete Real known_swarm_x[N](start=fill(0.0, N), each fixed=true);
+  discrete Real known_swarm_y[N](start=fill(0.0, N), each fixed=true);
+  discrete Real known_swarm_z[N](start=fill(0.0, N), each fixed=true);
+  discrete Real ai_ux(start=0.0, fixed=true), ai_uy(start=0.0, fixed=true), ai_uz(start=0.0, fixed=true);
+  discrete Real min_dist(start=9999.0, fixed=true);
   
+  // Variabili hardware
+  Boolean is_active;
+  Real ux_eff, uy_eff, uz_eff;
+  Real dist_to_base;
+  Boolean is_charging;
+  
+  // Funzione C esterna (Il Cervello)
+  function get_ai_thrust
+    input Real x; 
+    input Real y; 
+    input Real z; 
+    input Real bat; 
+    input Real min_dist; 
+    input Real drone_id;
+    input Real delta_x;
+    input Real delta_y;
+    input Real delta_z;
+    input Real current_time;
+    output Real ux; 
+    output Real uy; 
+    output Real uz;
+    external "C" get_ai_thrust(x, y, z, bat, min_dist, drone_id, delta_x, delta_y, delta_z, current_time, ux, uy, uz) 
+    annotation(Include="#include \"c:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/src/ai_controller.c\"");
+  end get_ai_thrust;
+
+  function check_packet_loss
+    input Real time_val;
+    input Real drone_id;
+    input Real drop_prob;
+    output Integer is_dropped;
+    external "C" is_dropped = check_packet_loss(time_val, drone_id, drop_prob)
+    annotation(Include="#include \"c:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/src/ai_controller.c\"");
+  end check_packet_loss;
+
+  // Funzione calcolo distanza
+  function calculate_min_dist
+    input Real x[:];
+    input Real y[:];
+    input Real z[:];
+    input Integer target_idx;
+    output Real min_d;
+  algorithm
+    min_d := 9999.0;
+    for j in 1:size(x, 1) loop
+      if j <> target_idx then
+        min_d := min(min_d, sqrt((x[target_idx]-x[j])^2 + (y[target_idx]-y[j])^2 + (z[target_idx]-z[j])^2));
+      end if;
+    end for;
+  end calculate_min_dist;
+  
+  // Animazione 3D
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape drone_vis(
+    shapeType="sphere", color={255, 50, 50}, length=1.5, width=1.5, height=1.5, r={x, y, z}
+  );
+
 equation
-  // 1. VINCOLI HARDWARE: Il drone è vivo solo se ha energia e non è guasto
+  // CICLO DI RETE E DECISIONALE (Gira a 2 Hz / ogni 0.5s)
+  when sample(0, 0.5) then
+    // 1. Ricezione dei pacchetti di rete (Aggiornamento cache con Packet Loss 20%)
+    for j in 1:N loop
+      if check_packet_loss(time, drone_index, 0.2) == 0 or time <= 0.01 then
+        known_swarm_x[j] = swarm_x[j];
+        known_swarm_y[j] = swarm_y[j];
+        known_swarm_z[j] = swarm_z[j];
+      else
+        known_swarm_x[j] = pre(known_swarm_x[j]);
+        known_swarm_y[j] = pre(known_swarm_y[j]);
+        known_swarm_z[j] = pre(known_swarm_z[j]);
+      end if;
+    end for;
+    
+    // 2. Calcolo distanza minima basata sui pacchetti ritardati
+    min_dist = calculate_min_dist(known_swarm_x, known_swarm_y, known_swarm_z, drone_index);
+    
+    // 3. Elaborazione della Rete Neurale
+    // NOTA: il drone usa la SUA VERA POSIZIONE (x,y,z) e ID, ma la distanza in base ai pacchetti
+    // Passiamo anche il vettore verso la sua base assegnata per semplificare l'addestramento
+    (ai_ux, ai_uy, ai_uz) = get_ai_thrust(x, y, z, B, min_dist, (drone_index - 1) / (N - 1), base_x - x, base_y - y, base_z - z, time);
+  end when;
+
+  // DINAMICA CONTINUA
   is_active = (B > 0.0) and (not is_failed);
   
-  // Se è vivo esegue i comandi del C, altrimenti i motori erogano 0 Newton
-  ux_eff = if is_active then ux else 0.0;
-  uy_eff = if is_active then uy else 0.0;
-  uz_eff = if is_active then uz else 0.0;
+  // Le spinte applicate sono quelle decise all'ultimo tick di rete (Zero-Order Hold)
+  ux_eff = if is_active then ai_ux else 0.0;
+  uy_eff = if is_active then ai_uy else 0.0;
+  uz_eff = if is_active then ai_uz else 0.0;
 
-  // 2. DINAMICA FISICA (Usa le spinte effettive, non quelle richieste)
   v_norm = sqrt(vx^2 + vy^2 + vz^2);
+  
+  dist_to_base = sqrt((x - base_x)^2 + (y - base_y)^2 + (z - base_z)^2);
+  is_charging = dist_to_base < R_base;
   
   der(x) = vx;
   der(y) = vy;
@@ -49,7 +137,8 @@ equation
   der(vy) = (uy_eff - kd * vy * v_norm) / m;
   der(vz) = (uz_eff - kd * vz * v_norm) / m;
   
-  // 3. CONSUMO BATTERIA: Se B scende a 0, il consumo si ferma per non avere energia negativa
-  der(B) = if B > 0.0 then -c1 - c2 * (abs(ux_eff) + abs(uy_eff) + abs(uz_eff)) else 0.0;
+  der(B) = if is_charging and B < 100.0 then charge_rate
+           else if B > 0.0 then -c1 - c2 * (abs(ux_eff) + abs(uy_eff) + abs(uz_eff)) 
+           else 0.0;
   
 end UnderwaterDrone;

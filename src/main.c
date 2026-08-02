@@ -16,8 +16,7 @@
 // Parametri dell'Evolutionary Strategy
 #define POPULATION_SIZE 20
 #define ALPHA 0.05
-#define SIGMA 0.1
-#define NUM_EPOCHS 200
+#define NUM_EPOCHS 400
 
 // Struttura di comodo per passare i dati del singolo drone
 typedef struct {
@@ -67,10 +66,18 @@ double getCost(DroneState drone, DroneState all_drones[], int num_drones) {
     }
 
     // 4. Logica di Ricarica (Rientro alla Base)
-    if (drone.battery < 20.0) {
-        // Base assunta all'origine (0, 0, 0)
-        double dist_base = sqrt(pow(drone.x, 2) + pow(drone.y, 2) + pow(drone.z, 2));
-        cost += W_BAT * dist_base; // La rete imparerà a minimizzare questa distanza abbassando il costo
+    if (drone.is_broadcasting_return == 1) { // flag ISTERESI
+        // Basi di ricarica personalizzate per ogni drone (stesse di DroneSwarm.mo)
+        const double BASES_X[4] = {15.0, -15.0, -15.0, 15.0};
+        const double BASES_Y[4] = {15.0, 15.0, -15.0, -15.0};
+        const double BASES_Z[4] = {-10.0, -10.0, -10.0, -10.0};
+        
+        double base_x = BASES_X[drone.id];
+        double base_y = BASES_Y[drone.id];
+        double base_z = BASES_Z[drone.id];
+        
+        double dist_base = sqrt(pow(drone.x - base_x, 2) + pow(drone.y - base_y, 2) + pow(drone.z - base_z, 2));
+        cost += W_BAT * dist_base; // Minimizza distanza dalla SUA stazione di ricarica
     }
 
     return cost;
@@ -157,8 +164,11 @@ int main() {
 
     printf("\n=== Avvio Addestramento Evolutionary Strategy ===\n");
 
-    // --- CICLO DELLE EPOCHE (Generazioni) ---
-    for (int epoch = 0; epoch < NUM_EPOCHS; epoch++) {
+        // === AVVIO ADDESTRAMENTO ===
+        double current_sigma = 0.1;  // Rumore iniziale esplorativo
+        double current_alpha = 0.05; // Learning rate effettivo
+        
+        for (int epoch = 0; epoch < NUM_EPOCHS; epoch++) {
         
         get_parameters(&policy_nn, theta);
         
@@ -171,12 +181,20 @@ int main() {
             // Generazione del rumore e perturbazione dei pesi
             for (int j = 0; j < PARAM_COUNT; j++) {
                 epsilon[p][j] = random_normal();
-                theta_candidate[j] = theta[j] + (SIGMA * epsilon[p][j]);
+                theta_candidate[j] = theta[j] + (current_sigma * epsilon[p][j]);
             }
             set_parameters(&candidate_nn, theta_candidate);
 
-            // Reset della FMU per il nuovo test da zero
+            // Scriviamo i pesi su file per permettere all'FMU di leggerli a t=0
+            FILE *f_weights = fopen("weights.bin", "wb");
+            if (f_weights) {
+                fwrite(theta_candidate, sizeof(double), PARAM_COUNT, f_weights);
+                fclose(f_weights);
+            }
+
+            // Reset della FMU (usiamo fmi2_reset ora che il memory corruption è stato risolto)
             fmi2_reset(instance);
+            
             fmi2_setupExperiment(instance, fmi2False, 0.0, 0.0, fmi2True, 60.0);
             fmi2_enterInitializationMode(instance);
             fmi2_exitInitializationMode(instance);
@@ -186,8 +204,15 @@ int main() {
             fmi2Real stop_time = 60.0;
 
             fmi2Real pos_x[4], pos_y[4], pos_z[4], bat[4];
-            fmi2Real ux[4], uy[4], uz[4];
+            fmi2Real known_pos_x[4] = {0}, known_pos_y[4] = {0}, known_pos_z[4] = {0};
+            fmi2Real last_ai_ux[4] = {0}, last_ai_uy[4] = {0}, last_ai_uz[4] = {0};
             double total_swarm_cost = 0.0;
+            int is_returning[4] = {0, 0, 0, 0};
+
+            // Primer per il network a t=0
+            fmi2_getReal(instance, vr_pos_x, 4, known_pos_x);
+            fmi2_getReal(instance, vr_pos_y, 4, known_pos_y);
+            fmi2_getReal(instance, vr_pos_z, 4, known_pos_z);
 
             // --- LOOP TEMPORALE DI CO-SIMULAZIONE (60 secondi) ---
             while (time_sim < stop_time) {
@@ -196,52 +221,82 @@ int main() {
                 fmi2_getReal(instance, vr_pos_z, 4, pos_z);
                 fmi2_getReal(instance, vr_bat, 4, bat);
 
+                // --- 1. Rete di Comunicazione Discreta (2 Hz -> ogni 0.5s) ---
+                if (fmod(time_sim, 0.5) < 0.05) { 
+                    for (int i=0; i<4; i++) {
+                        // Packet loss del 20% (viene aggiornato solo nell'80% dei casi)
+                        if (((double)rand() / RAND_MAX) > 0.20) {
+                            known_pos_x[i] = pos_x[i];
+                            known_pos_y[i] = pos_y[i];
+                            known_pos_z[i] = pos_z[i];
+                        }
+                    }
+
+                    // --- 2. Elaborazione Rete Neurale Decentralizzata ---
+                    for (int i = 0; i < 4; i++) {
+                        // Ricava la coordinata della sua base
+                        const double BASES_X[4] = {15.0, -15.0, -15.0, 15.0};
+                        const double BASES_Y[4] = {15.0, 15.0, -15.0, -15.0};
+                        const double BASES_Z[4] = {-10.0, -10.0, -10.0, -10.0};
+                        double base_x = BASES_X[i];
+                        double base_y = BASES_Y[i];
+                        double base_z = BASES_Z[i];
+                        
+                        double inputs[INPUT_SIZE];
+                        inputs[0] = pos_x[i] / 20.0; // Conosce la sua vera posizione (GPS/Sensori)
+                        inputs[1] = pos_y[i] / 20.0; 
+                        inputs[2] = pos_z[i] / 10.0; 
+                        inputs[3] = bat[i] / 100.0;  
+                        
+                        double min_dist = 9999.0;
+                        for (int j = 0; j < 4; j++) {
+                            if (i != j) {
+                                // Distanza rispetto alla *posizione nota* (ricevuta via messaggio) degli altri
+                                double d = sqrt(pow(pos_x[i] - known_pos_x[j], 2) + 
+                                                pow(pos_y[i] - known_pos_y[j], 2) + 
+                                                pow(pos_z[i] - known_pos_z[j], 2));
+                                if (d < min_dist) min_dist = d;
+                            }
+                        }
+                        inputs[4] = min_dist / 40.0;
+                        inputs[5] = i / 3.0; 
+                        inputs[6] = (base_x - pos_x[i]) / 40.0;
+                        inputs[7] = (base_y - pos_y[i]) / 40.0;
+                        inputs[8] = (base_z - pos_z[i]) / 10.0;
+
+                        double outputs[OUTPUT_SIZE];
+                        forward_pass(&candidate_nn, inputs, outputs);
+
+                        last_ai_ux[i] = outputs[0] * 10.0;
+                        last_ai_uy[i] = outputs[1] * 10.0;
+                        last_ai_uz[i] = outputs[2] * 10.0;
+                    }
+                }
+
+                // --- 3. Calcolo Costo e Spinte (Continuo/Zero-Order Hold) ---
                 DroneState current_swarm[4];
                 for (int i = 0; i < 4; i++) {
+                    if (bat[i] < 20.0) {
+                        is_returning[i] = 1;
+                    } else if (bat[i] > 80.0) {
+                        is_returning[i] = 0;
+                    }
+
                     current_swarm[i].id = i;
                     current_swarm[i].x = pos_x[i];
                     current_swarm[i].y = pos_y[i];
                     current_swarm[i].z = pos_z[i];
                     current_swarm[i].battery = bat[i];
-                    current_swarm[i].is_broadcasting_return = 0;
-                }
-
-                for (int i = 0; i < 4; i++) {
-                    double inputs[INPUT_SIZE];
-                    inputs[0] = pos_x[i] / 20.0; // Normalizzazione approssimativa [-1, 1]
-                    inputs[1] = pos_y[i] / 20.0; // Normalizzazione approssimativa [-1, 1]
-                    inputs[2] = pos_z[i] / 10.0; // Normalizzazione approssimativa [-1, 0]
-                    inputs[3] = bat[i] / 100.0;  // [0, 1]
-                    
-                    double min_dist = 9999.0;
-                    for (int j = 0; j < 4; j++) {
-                        if (i != j) {
-                            double d = sqrt(pow(pos_x[i] - pos_x[j], 2) + 
-                                            pow(pos_y[i] - pos_y[j], 2) + 
-                                            pow(pos_z[i] - pos_z[j], 2));
-                            if (d < min_dist) min_dist = d;
-                        }
-                    }
-                    inputs[4] = min_dist / 40.0; // Normalizzato su scala tipica (40m)
-                    inputs[5] = i / 3.0;         // ID del drone (0.0, 0.33, 0.66, 1.0) per rompere la simmetria!
-
-                    double outputs[OUTPUT_SIZE];
-                    forward_pass(&candidate_nn, inputs, outputs);
-
-                    ux[i] = outputs[0] * 10.0;
-                    uy[i] = outputs[1] * 10.0;
-                    uz[i] = outputs[2] * 10.0;
-
-                    current_swarm[i].ux = ux[i];
-                    current_swarm[i].uy = uy[i];
-                    current_swarm[i].uz = uz[i];
+                    current_swarm[i].ux = last_ai_ux[i];
+                    current_swarm[i].uy = last_ai_uy[i];
+                    current_swarm[i].uz = last_ai_uz[i];
+                    current_swarm[i].is_broadcasting_return = is_returning[i];
 
                     total_swarm_cost += getCost(current_swarm[i], current_swarm, 4);
                 }
 
-                fmi2_setReal(instance, vr_ux, 4, ux);
-                fmi2_setReal(instance, vr_uy, 4, uy);
-                fmi2_setReal(instance, vr_uz, 4, uz);
+                // Leggiamo la batteria (VR 56, 57, 58, 59)
+                fmi2_getReal(instance, vr_bat, 4, bat);
 
                 fmi2Status status = fmi2_doStep(instance, time_sim, step_size, fmi2True);
                 if (status != fmi2OK) {
@@ -309,8 +364,12 @@ int main() {
                 gradient_estimate += normalized_fitness[p] * epsilon[p][j];
             }
             // Sottraiamo per la minimizzazione del costo
-            theta[j] = theta[j] - (ALPHA / SIGMA) * (gradient_estimate / POPULATION_SIZE);
+            // NOTA: Togliamo la divisione per current_sigma altrimenti il gradiente esplode quando sigma tende a 0!
+            theta[j] = theta[j] - current_alpha * (gradient_estimate / POPULATION_SIZE);
         }
+        
+        current_sigma *= 0.99; // Decadimento più lento (0.99 invece di 0.97) per epoche = 400
+        current_alpha *= 0.995; // Decadimento alpha proporzionalmente rallentato
         
         // Aggiorna la rete madre con i nuovi parametri ottimizzati
         set_parameters(&policy_nn, theta);
