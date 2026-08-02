@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/CMakeFiles/fmi4c-populate"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/CMakeFiles/fmi4c-populate.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/CMakeFiles/fmi4c-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-subbuild/fmi4c-populate-prefix/src/fmi4c-populate-stamp/fmi4c-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"fmi4c-populate"
+		],
+		"name" : "fmi4c-populate"
+	}
+}

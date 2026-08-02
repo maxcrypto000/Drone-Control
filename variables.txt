@@ -1,0 +1,1136 @@
+<ModelVariables>
+  <!-- Index of variable = "1" -->
+  <ScalarVariable
+    name="drones[1].B"
+    valueReference="0"
+    description="Livello batteria (%)"
+    initial="exact">
+    <Real start="100.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "2" -->
+  <ScalarVariable
+    name="drones[2].B"
+    valueReference="1"
+    description="Livello batteria (%)"
+    initial="exact">
+    <Real start="100.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "3" -->
+  <ScalarVariable
+    name="drones[3].B"
+    valueReference="2"
+    description="Livello batteria (%)"
+    initial="exact">
+    <Real start="100.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "4" -->
+  <ScalarVariable
+    name="drones[4].B"
+    valueReference="3"
+    description="Livello batteria (%)"
+    initial="exact">
+    <Real start="100.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "5" -->
+  <ScalarVariable
+    name="drones[1].vx"
+    valueReference="4"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "6" -->
+  <ScalarVariable
+    name="drones[2].vx"
+    valueReference="5"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "7" -->
+  <ScalarVariable
+    name="drones[3].vx"
+    valueReference="6"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "8" -->
+  <ScalarVariable
+    name="drones[4].vx"
+    valueReference="7"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "9" -->
+  <ScalarVariable
+    name="drones[1].vy"
+    valueReference="8"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "10" -->
+  <ScalarVariable
+    name="drones[2].vy"
+    valueReference="9"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "11" -->
+  <ScalarVariable
+    name="drones[3].vy"
+    valueReference="10"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "12" -->
+  <ScalarVariable
+    name="drones[4].vy"
+    valueReference="11"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "13" -->
+  <ScalarVariable
+    name="drones[1].vz"
+    valueReference="12"
+    description="Velocità sui tre assi (m/s)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "14" -->
+  <ScalarVariable
+    name="drones[2].vz"
+    valueReference="13"
+    description="Velocità sui tre assi (m/s)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "15" -->
+  <ScalarVariable
+    name="drones[3].vz"
+    valueReference="14"
+    description="Velocità sui tre assi (m/s)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "16" -->
+  <ScalarVariable
+    name="drones[4].vz"
+    valueReference="15"
+    description="Velocità sui tre assi (m/s)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "17" -->
+  <ScalarVariable
+    name="drones[1].x"
+    valueReference="16"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "18" -->
+  <ScalarVariable
+    name="drones[2].x"
+    valueReference="17"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "19" -->
+  <ScalarVariable
+    name="drones[3].x"
+    valueReference="18"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "20" -->
+  <ScalarVariable
+    name="drones[4].x"
+    valueReference="19"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "21" -->
+  <ScalarVariable
+    name="drones[1].y"
+    valueReference="20"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "22" -->
+  <ScalarVariable
+    name="drones[2].y"
+    valueReference="21"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "23" -->
+  <ScalarVariable
+    name="drones[3].y"
+    valueReference="22"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "24" -->
+  <ScalarVariable
+    name="drones[4].y"
+    valueReference="23"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "25" -->
+  <ScalarVariable
+    name="drones[1].z"
+    valueReference="24"
+    description="Coordinate spaziali (m)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "26" -->
+  <ScalarVariable
+    name="drones[2].z"
+    valueReference="25"
+    description="Coordinate spaziali (m)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "27" -->
+  <ScalarVariable
+    name="drones[3].z"
+    valueReference="26"
+    description="Coordinate spaziali (m)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "28" -->
+  <ScalarVariable
+    name="drones[4].z"
+    valueReference="27"
+    description="Coordinate spaziali (m)"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "29" -->
+  <ScalarVariable
+    name="der(drones[1].B)"
+    valueReference="28"
+    description="der(Livello batteria (%))"
+    >
+    <Real derivative="1"/>
+  </ScalarVariable>
+  <!-- Index of variable = "30" -->
+  <ScalarVariable
+    name="der(drones[2].B)"
+    valueReference="29"
+    description="der(Livello batteria (%))"
+    >
+    <Real derivative="2"/>
+  </ScalarVariable>
+  <!-- Index of variable = "31" -->
+  <ScalarVariable
+    name="der(drones[3].B)"
+    valueReference="30"
+    description="der(Livello batteria (%))"
+    >
+    <Real derivative="3"/>
+  </ScalarVariable>
+  <!-- Index of variable = "32" -->
+  <ScalarVariable
+    name="der(drones[4].B)"
+    valueReference="31"
+    description="der(Livello batteria (%))"
+    >
+    <Real derivative="4"/>
+  </ScalarVariable>
+  <!-- Index of variable = "33" -->
+  <ScalarVariable
+    name="der(drones[1].vx)"
+    valueReference="32"
+    >
+    <Real derivative="5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "34" -->
+  <ScalarVariable
+    name="der(drones[2].vx)"
+    valueReference="33"
+    >
+    <Real derivative="6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "35" -->
+  <ScalarVariable
+    name="der(drones[3].vx)"
+    valueReference="34"
+    >
+    <Real derivative="7"/>
+  </ScalarVariable>
+  <!-- Index of variable = "36" -->
+  <ScalarVariable
+    name="der(drones[4].vx)"
+    valueReference="35"
+    >
+    <Real derivative="8"/>
+  </ScalarVariable>
+  <!-- Index of variable = "37" -->
+  <ScalarVariable
+    name="der(drones[1].vy)"
+    valueReference="36"
+    >
+    <Real derivative="9"/>
+  </ScalarVariable>
+  <!-- Index of variable = "38" -->
+  <ScalarVariable
+    name="der(drones[2].vy)"
+    valueReference="37"
+    >
+    <Real derivative="10"/>
+  </ScalarVariable>
+  <!-- Index of variable = "39" -->
+  <ScalarVariable
+    name="der(drones[3].vy)"
+    valueReference="38"
+    >
+    <Real derivative="11"/>
+  </ScalarVariable>
+  <!-- Index of variable = "40" -->
+  <ScalarVariable
+    name="der(drones[4].vy)"
+    valueReference="39"
+    >
+    <Real derivative="12"/>
+  </ScalarVariable>
+  <!-- Index of variable = "41" -->
+  <ScalarVariable
+    name="der(drones[1].vz)"
+    valueReference="40"
+    description="der(Velocità sui tre assi (m/s))"
+    >
+    <Real derivative="13"/>
+  </ScalarVariable>
+  <!-- Index of variable = "42" -->
+  <ScalarVariable
+    name="der(drones[2].vz)"
+    valueReference="41"
+    description="der(Velocità sui tre assi (m/s))"
+    >
+    <Real derivative="14"/>
+  </ScalarVariable>
+  <!-- Index of variable = "43" -->
+  <ScalarVariable
+    name="der(drones[3].vz)"
+    valueReference="42"
+    description="der(Velocità sui tre assi (m/s))"
+    >
+    <Real derivative="15"/>
+  </ScalarVariable>
+  <!-- Index of variable = "44" -->
+  <ScalarVariable
+    name="der(drones[4].vz)"
+    valueReference="43"
+    description="der(Velocità sui tre assi (m/s))"
+    >
+    <Real derivative="16"/>
+  </ScalarVariable>
+  <!-- Index of variable = "45" -->
+  <ScalarVariable
+    name="der(drones[1].x)"
+    valueReference="44"
+    >
+    <Real derivative="17"/>
+  </ScalarVariable>
+  <!-- Index of variable = "46" -->
+  <ScalarVariable
+    name="der(drones[2].x)"
+    valueReference="45"
+    >
+    <Real derivative="18"/>
+  </ScalarVariable>
+  <!-- Index of variable = "47" -->
+  <ScalarVariable
+    name="der(drones[3].x)"
+    valueReference="46"
+    >
+    <Real derivative="19"/>
+  </ScalarVariable>
+  <!-- Index of variable = "48" -->
+  <ScalarVariable
+    name="der(drones[4].x)"
+    valueReference="47"
+    >
+    <Real derivative="20"/>
+  </ScalarVariable>
+  <!-- Index of variable = "49" -->
+  <ScalarVariable
+    name="der(drones[1].y)"
+    valueReference="48"
+    >
+    <Real derivative="21"/>
+  </ScalarVariable>
+  <!-- Index of variable = "50" -->
+  <ScalarVariable
+    name="der(drones[2].y)"
+    valueReference="49"
+    >
+    <Real derivative="22"/>
+  </ScalarVariable>
+  <!-- Index of variable = "51" -->
+  <ScalarVariable
+    name="der(drones[3].y)"
+    valueReference="50"
+    >
+    <Real derivative="23"/>
+  </ScalarVariable>
+  <!-- Index of variable = "52" -->
+  <ScalarVariable
+    name="der(drones[4].y)"
+    valueReference="51"
+    >
+    <Real derivative="24"/>
+  </ScalarVariable>
+  <!-- Index of variable = "53" -->
+  <ScalarVariable
+    name="der(drones[1].z)"
+    valueReference="52"
+    description="der(Coordinate spaziali (m))"
+    >
+    <Real derivative="25"/>
+  </ScalarVariable>
+  <!-- Index of variable = "54" -->
+  <ScalarVariable
+    name="der(drones[2].z)"
+    valueReference="53"
+    description="der(Coordinate spaziali (m))"
+    >
+    <Real derivative="26"/>
+  </ScalarVariable>
+  <!-- Index of variable = "55" -->
+  <ScalarVariable
+    name="der(drones[3].z)"
+    valueReference="54"
+    description="der(Coordinate spaziali (m))"
+    >
+    <Real derivative="27"/>
+  </ScalarVariable>
+  <!-- Index of variable = "56" -->
+  <ScalarVariable
+    name="der(drones[4].z)"
+    valueReference="55"
+    description="der(Coordinate spaziali (m))"
+    >
+    <Real derivative="28"/>
+  </ScalarVariable>
+  <!-- Index of variable = "57" -->
+  <ScalarVariable
+    name="bat_level[1]"
+    valueReference="56"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "58" -->
+  <ScalarVariable
+    name="bat_level[2]"
+    valueReference="57"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "59" -->
+  <ScalarVariable
+    name="bat_level[3]"
+    valueReference="58"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "60" -->
+  <ScalarVariable
+    name="bat_level[4]"
+    valueReference="59"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "61" -->
+  <ScalarVariable
+    name="drones[1].ux_eff"
+    valueReference="60"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "62" -->
+  <ScalarVariable
+    name="drones[2].ux_eff"
+    valueReference="61"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "63" -->
+  <ScalarVariable
+    name="drones[3].ux_eff"
+    valueReference="62"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "64" -->
+  <ScalarVariable
+    name="drones[4].ux_eff"
+    valueReference="63"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "65" -->
+  <ScalarVariable
+    name="drones[1].uy_eff"
+    valueReference="64"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "66" -->
+  <ScalarVariable
+    name="drones[2].uy_eff"
+    valueReference="65"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "67" -->
+  <ScalarVariable
+    name="drones[3].uy_eff"
+    valueReference="66"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "68" -->
+  <ScalarVariable
+    name="drones[4].uy_eff"
+    valueReference="67"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "69" -->
+  <ScalarVariable
+    name="drones[1].uz_eff"
+    valueReference="68"
+    description="Spinta EFFETTIVA erogata dai motori"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "70" -->
+  <ScalarVariable
+    name="drones[2].uz_eff"
+    valueReference="69"
+    description="Spinta EFFETTIVA erogata dai motori"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "71" -->
+  <ScalarVariable
+    name="drones[3].uz_eff"
+    valueReference="70"
+    description="Spinta EFFETTIVA erogata dai motori"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "72" -->
+  <ScalarVariable
+    name="drones[4].uz_eff"
+    valueReference="71"
+    description="Spinta EFFETTIVA erogata dai motori"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "73" -->
+  <ScalarVariable
+    name="drones[1].v_norm"
+    valueReference="72"
+    description="Modulo della velocità assoluta"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "74" -->
+  <ScalarVariable
+    name="drones[2].v_norm"
+    valueReference="73"
+    description="Modulo della velocità assoluta"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "75" -->
+  <ScalarVariable
+    name="drones[3].v_norm"
+    valueReference="74"
+    description="Modulo della velocità assoluta"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "76" -->
+  <ScalarVariable
+    name="drones[4].v_norm"
+    valueReference="75"
+    description="Modulo della velocità assoluta"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "77" -->
+  <ScalarVariable
+    name="pos_x[1]"
+    valueReference="76"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "78" -->
+  <ScalarVariable
+    name="pos_x[2]"
+    valueReference="77"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "79" -->
+  <ScalarVariable
+    name="pos_x[3]"
+    valueReference="78"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "80" -->
+  <ScalarVariable
+    name="pos_x[4]"
+    valueReference="79"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "81" -->
+  <ScalarVariable
+    name="pos_y[1]"
+    valueReference="80"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "82" -->
+  <ScalarVariable
+    name="pos_y[2]"
+    valueReference="81"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "83" -->
+  <ScalarVariable
+    name="pos_y[3]"
+    valueReference="82"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "84" -->
+  <ScalarVariable
+    name="pos_y[4]"
+    valueReference="83"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "85" -->
+  <ScalarVariable
+    name="pos_z[1]"
+    valueReference="84"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "86" -->
+  <ScalarVariable
+    name="pos_z[2]"
+    valueReference="85"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "87" -->
+  <ScalarVariable
+    name="pos_z[3]"
+    valueReference="86"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "88" -->
+  <ScalarVariable
+    name="pos_z[4]"
+    valueReference="87"
+    causality="output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "89" -->
+  <ScalarVariable
+    name="ux[1]"
+    valueReference="88"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "90" -->
+  <ScalarVariable
+    name="ux[2]"
+    valueReference="89"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "91" -->
+  <ScalarVariable
+    name="ux[3]"
+    valueReference="90"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "92" -->
+  <ScalarVariable
+    name="ux[4]"
+    valueReference="91"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "93" -->
+  <ScalarVariable
+    name="uy[1]"
+    valueReference="92"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "94" -->
+  <ScalarVariable
+    name="uy[2]"
+    valueReference="93"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "95" -->
+  <ScalarVariable
+    name="uy[3]"
+    valueReference="94"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "96" -->
+  <ScalarVariable
+    name="uy[4]"
+    valueReference="95"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "97" -->
+  <ScalarVariable
+    name="uz[1]"
+    valueReference="96"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "98" -->
+  <ScalarVariable
+    name="uz[2]"
+    valueReference="97"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "99" -->
+  <ScalarVariable
+    name="uz[3]"
+    valueReference="98"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "100" -->
+  <ScalarVariable
+    name="uz[4]"
+    valueReference="99"
+    causality="input"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "101" -->
+  <ScalarVariable
+    name="drones[1].c1"
+    valueReference="100"
+    description="Consumo base (elettronica)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "102" -->
+  <ScalarVariable
+    name="drones[2].c1"
+    valueReference="101"
+    description="Consumo base (elettronica)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "103" -->
+  <ScalarVariable
+    name="drones[3].c1"
+    valueReference="102"
+    description="Consumo base (elettronica)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "104" -->
+  <ScalarVariable
+    name="drones[4].c1"
+    valueReference="103"
+    description="Consumo base (elettronica)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "105" -->
+  <ScalarVariable
+    name="drones[1].c2"
+    valueReference="104"
+    description="Fattore di consumo proporzionale allo sforzo dei motori"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.1"/>
+  </ScalarVariable>
+  <!-- Index of variable = "106" -->
+  <ScalarVariable
+    name="drones[2].c2"
+    valueReference="105"
+    description="Fattore di consumo proporzionale allo sforzo dei motori"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.1"/>
+  </ScalarVariable>
+  <!-- Index of variable = "107" -->
+  <ScalarVariable
+    name="drones[3].c2"
+    valueReference="106"
+    description="Fattore di consumo proporzionale allo sforzo dei motori"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.1"/>
+  </ScalarVariable>
+  <!-- Index of variable = "108" -->
+  <ScalarVariable
+    name="drones[4].c2"
+    valueReference="107"
+    description="Fattore di consumo proporzionale allo sforzo dei motori"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.1"/>
+  </ScalarVariable>
+  <!-- Index of variable = "109" -->
+  <ScalarVariable
+    name="drones[1].kd"
+    valueReference="108"
+    description="Coefficiente di attrito quadratico dell'acqua"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "110" -->
+  <ScalarVariable
+    name="drones[2].kd"
+    valueReference="109"
+    description="Coefficiente di attrito quadratico dell'acqua"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "111" -->
+  <ScalarVariable
+    name="drones[3].kd"
+    valueReference="110"
+    description="Coefficiente di attrito quadratico dell'acqua"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "112" -->
+  <ScalarVariable
+    name="drones[4].kd"
+    valueReference="111"
+    description="Coefficiente di attrito quadratico dell'acqua"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "113" -->
+  <ScalarVariable
+    name="drones[1].m"
+    valueReference="112"
+    description="Massa (kg)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="15.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "114" -->
+  <ScalarVariable
+    name="drones[2].m"
+    valueReference="113"
+    description="Massa (kg)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="15.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "115" -->
+  <ScalarVariable
+    name="drones[3].m"
+    valueReference="114"
+    description="Massa (kg)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="15.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "116" -->
+  <ScalarVariable
+    name="drones[4].m"
+    valueReference="115"
+    description="Massa (kg)"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="15.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "117" -->
+  <ScalarVariable
+    name="drones[1].ux"
+    valueReference="88"
+    description="Comando di spinta asse X richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "118" -->
+  <ScalarVariable
+    name="drones[2].ux"
+    valueReference="89"
+    description="Comando di spinta asse X richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "119" -->
+  <ScalarVariable
+    name="drones[3].ux"
+    valueReference="90"
+    description="Comando di spinta asse X richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "120" -->
+  <ScalarVariable
+    name="drones[4].ux"
+    valueReference="91"
+    description="Comando di spinta asse X richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "121" -->
+  <ScalarVariable
+    name="drones[1].uy"
+    valueReference="92"
+    description="Comando di spinta asse Y richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "122" -->
+  <ScalarVariable
+    name="drones[2].uy"
+    valueReference="93"
+    description="Comando di spinta asse Y richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "123" -->
+  <ScalarVariable
+    name="drones[3].uy"
+    valueReference="94"
+    description="Comando di spinta asse Y richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "124" -->
+  <ScalarVariable
+    name="drones[4].uy"
+    valueReference="95"
+    description="Comando di spinta asse Y richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "125" -->
+  <ScalarVariable
+    name="drones[1].uz"
+    valueReference="96"
+    description="Comando di spinta asse Z richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "126" -->
+  <ScalarVariable
+    name="drones[2].uz"
+    valueReference="97"
+    description="Comando di spinta asse Z richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "127" -->
+  <ScalarVariable
+    name="drones[3].uz"
+    valueReference="98"
+    description="Comando di spinta asse Z richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "128" -->
+  <ScalarVariable
+    name="drones[4].uz"
+    valueReference="99"
+    description="Comando di spinta asse Z richiesto dal C"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "129" -->
+  <ScalarVariable
+    name="N"
+    valueReference="0"
+    description="Numero di droni nello sciame"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "130" -->
+  <ScalarVariable
+    name="drones[1].is_active"
+    valueReference="0"
+    description="Stato vitale del drone (True se ha batteria e non è guasto)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "131" -->
+  <ScalarVariable
+    name="drones[2].is_active"
+    valueReference="1"
+    description="Stato vitale del drone (True se ha batteria e non è guasto)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "132" -->
+  <ScalarVariable
+    name="drones[3].is_active"
+    valueReference="2"
+    description="Stato vitale del drone (True se ha batteria e non è guasto)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "133" -->
+  <ScalarVariable
+    name="drones[4].is_active"
+    valueReference="3"
+    description="Stato vitale del drone (True se ha batteria e non è guasto)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "134" -->
+  <ScalarVariable
+    name="is_failed[1]"
+    valueReference="4"
+    variability="discrete"
+    causality="input"
+    >
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "135" -->
+  <ScalarVariable
+    name="is_failed[2]"
+    valueReference="5"
+    variability="discrete"
+    causality="input"
+    >
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "136" -->
+  <ScalarVariable
+    name="is_failed[3]"
+    valueReference="6"
+    variability="discrete"
+    causality="input"
+    >
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "137" -->
+  <ScalarVariable
+    name="is_failed[4]"
+    valueReference="7"
+    variability="discrete"
+    causality="input"
+    >
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "138" -->
+  <ScalarVariable
+    name="drones[1].is_failed"
+    valueReference="4"
+    description="Segnale di avaria hardware (True = motori guasti)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "139" -->
+  <ScalarVariable
+    name="drones[2].is_failed"
+    valueReference="5"
+    description="Segnale di avaria hardware (True = motori guasti)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "140" -->
+  <ScalarVariable
+    name="drones[3].is_failed"
+    valueReference="6"
+    description="Segnale di avaria hardware (True = motori guasti)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  <!-- Index of variable = "141" -->
+  <ScalarVariable
+    name="drones[4].is_failed"
+    valueReference="7"
+    description="Segnale di avaria hardware (True = motori guasti)"
+    variability="discrete"
+    >
+    <Boolean/>
+  </ScalarVariable>
+  </ModelVariables>

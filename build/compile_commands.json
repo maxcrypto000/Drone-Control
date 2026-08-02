@@ -1,0 +1,26 @@
+[
+{
+  "directory": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build",
+  "command": "C:/msys64/mingw64/bin/gcc.exe -DEZXML_NOMMAP -DHAVE_MEMMOVE=1 -DUSE_FILE32API @CMakeFiles/controller.dir/includes_C.rsp  -static -static-libgcc -g -std=gnu11 -o CMakeFiles/controller.dir/src/main.c.obj -c \"C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/src/main.c\"",
+  "file": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/src/main.c",
+  "output": "CMakeFiles/controller.dir/src/main.c.obj"
+},
+{
+  "directory": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-build",
+  "command": "C:/msys64/mingw64/bin/gcc.exe -DEZXML_NOMMAP -DFMI4C_DLLEXPORT -DHAVE_MEMMOVE=1 -DUSE_FILE32API -Dfmi4c_EXPORTS @CMakeFiles/fmi4c.dir/includes_C.rsp  -static -static-libgcc -g -std=gnu11 -o CMakeFiles/fmi4c.dir/src/fmi4c.c.obj -c \"C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-src/src/fmi4c.c\"",
+  "file": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-src/src/fmi4c.c",
+  "output": "_deps/fmi4c-build/CMakeFiles/fmi4c.dir/src/fmi4c.c.obj"
+},
+{
+  "directory": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-build",
+  "command": "C:/msys64/mingw64/bin/gcc.exe -DEZXML_NOMMAP -DFMI4C_DLLEXPORT -DHAVE_MEMMOVE=1 -DUSE_FILE32API -Dfmi4c_EXPORTS @CMakeFiles/fmi4c.dir/includes_C.rsp  -static -static-libgcc -g -std=gnu11 -o CMakeFiles/fmi4c.dir/src/fmi4c_utils.c.obj -c \"C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-src/src/fmi4c_utils.c\"",
+  "file": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-src/src/fmi4c_utils.c",
+  "output": "_deps/fmi4c-build/CMakeFiles/fmi4c.dir/src/fmi4c_utils.c.obj"
+},
+{
+  "directory": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-build",
+  "command": "C:/msys64/mingw64/bin/gcc.exe -DEZXML_NOMMAP -DFMI4C_DLLEXPORT -DHAVE_MEMMOVE=1 -DUSE_FILE32API -Dfmi4c_EXPORTS @CMakeFiles/fmi4c.dir/includes_C.rsp  -static -static-libgcc -g -std=gnu11 -o CMakeFiles/fmi4c.dir/3rdparty/ezxml/ezxml.c.obj -c \"C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-src/3rdparty/ezxml/ezxml.c\"",
+  "file": "C:/Users/maxbu/Desktop/uni/Verifica e validazione s/progetto/controllore/build/_deps/fmi4c-src/3rdparty/ezxml/ezxml.c",
+  "output": "_deps/fmi4c-build/CMakeFiles/fmi4c.dir/3rdparty/ezxml/ezxml.c.obj"
+}
+]
