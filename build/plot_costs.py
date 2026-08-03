@@ -14,9 +14,9 @@ for restart in df['Restart'].unique():
     subset = df[df['Restart'] == restart]
     plt.plot(subset['Epoch'], subset['BestCost'], label=f'Restart {restart}')
 
-plt.title('Miglior Costo per Epoca (Evolutionary Strategy)')
+plt.title('Miglior Reward per Epoca (Evolutionary Strategy)')
 plt.xlabel('Epoca')
-plt.ylabel('Costo Totale')
+plt.ylabel('Reward Totale')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()

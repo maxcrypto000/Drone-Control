@@ -5,8 +5,12 @@ model UnderwaterDrone
   parameter Real c1 = 0.5 "Consumo base (elettronica)";
   parameter Real c2 = 0.1 "Fattore di consumo proporzionale allo sforzo dei motori";
   
+  parameter Real start_x = 0.0;
+  parameter Real start_y = 0.0;
+  parameter Real start_z = 0.0;
+  
   // Variabili di stato
-  Real x(start=0.0, fixed=true), y(start=0.0, fixed=true), z(start=0.0, fixed=true);
+  Real x(start=start_x, fixed=true), y(start=start_y, fixed=true), z(start=start_z, fixed=true);
   Real vx(start=0.0, fixed=true), vy(start=0.0, fixed=true), vz(start=0.0, fixed=true);
   Real v_norm;
   Real B(start=100.0, fixed=true);
@@ -35,7 +39,10 @@ model UnderwaterDrone
   discrete Real known_swarm_z[N](start=fill(0.0, N), each fixed=true);
   discrete Real ai_ux(start=0.0, fixed=true), ai_uy(start=0.0, fixed=true), ai_uz(start=0.0, fixed=true);
   discrete Real min_dist(start=9999.0, fixed=true);
-  
+  discrete Boolean is_returning(start=false, fixed=true);
+  discrete Real target_x(start=20.0, fixed=true);
+  discrete Real target_y(start=-9.0, fixed=true);
+  discrete Real target_z(start=10.0, fixed=true);
   // Variabili hardware
   Boolean is_active;
   Real ux_eff, uy_eff, uz_eff;
@@ -86,11 +93,9 @@ model UnderwaterDrone
     end for;
   end calculate_min_dist;
   
-  // Animazione 3D
-  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape drone_vis(
-    shapeType="sphere", color={255, 50, 50}, length=1.5, width=1.5, height=1.5, r={x, y, z}
-  );
 
+  Real discharge_rate;
+  Real net_charge;
 equation
   // CICLO DI RETE E DECISIONALE (Gira a 2 Hz / ogni 0.5s)
   when sample(0, 0.5) then
@@ -110,10 +115,23 @@ equation
     // 2. Calcolo distanza minima basata sui pacchetti ritardati
     min_dist = calculate_min_dist(known_swarm_x, known_swarm_y, known_swarm_z, drone_index);
     
-    // 3. Elaborazione della Rete Neurale
+    // 3. Logica di Ritorno alla Base
+    if B < 20.0 then
+      is_returning = true;
+    elseif B > 80.0 then
+      is_returning = false;
+    else
+      is_returning = pre(is_returning);
+    end if;
+
+    target_x = if is_returning then base_x else 20.0; // Centro area pattugliamento (X: 10..30)
+    target_y = if is_returning then base_y else -9.0; // Centro area pattugliamento (Y: -10..-8)
+    target_z = if is_returning then base_z else 10.0; // Centro area pattugliamento (Z: 0..20)
+    
+    // 4. Elaborazione della Rete Neurale
     // NOTA: il drone usa la SUA VERA POSIZIONE (x,y,z) e ID, ma la distanza in base ai pacchetti
-    // Passiamo anche il vettore verso la sua base assegnata per semplificare l'addestramento
-    (ai_ux, ai_uy, ai_uz) = get_ai_thrust(x, y, z, B, min_dist, (drone_index - 1) / (N - 1), base_x - x, base_y - y, base_z - z, time);
+    // Passiamo il vettore verso il target corrente (Base o Pattugliamento) per semplificare l'addestramento
+    (ai_ux, ai_uy, ai_uz) = get_ai_thrust(x, y, z, B, min_dist, (drone_index - 1) / (N - 1), target_x - x, target_y - y, target_z - z, time);
   end when;
 
   // DINAMICA CONTINUA
@@ -137,8 +155,11 @@ equation
   der(vy) = (uy_eff - kd * vy * v_norm) / m;
   der(vz) = (uz_eff - kd * vz * v_norm) / m;
   
-  der(B) = if is_charging and B < 100.0 then charge_rate
-           else if B > 0.0 then -c1 - c2 * (abs(ux_eff) + abs(uy_eff) + abs(uz_eff)) 
-           else 0.0;
+  discharge_rate = c1 + c2 * (abs(ux_eff) + abs(uy_eff) + abs(uz_eff));
+  net_charge = charge_rate - discharge_rate;
   
+  der(B) = if is_charging then
+             (if noEvent(B >= 100.0) and net_charge > 0 then 0.0 else net_charge)
+           else
+             (if noEvent(B <= 0.0) then 0.0 else -discharge_rate);
 end UnderwaterDrone;
