@@ -71,15 +71,17 @@ double random_normal() {
     return sqrt(-2.0 * log(u1)) * cos(2.0 * 3.14159265358979323846 * u2);
 }
 
-// Inizializza i pesi e i bias della rete con valori casuali
+// Inizializza i pesi e i bias della rete con valori casuali PICCOLI
+// Moltiplicando per 0.01, evitiamo che le funzioni tanh() si "saturino" subito a +1 o -1,
+// garantendo che al tempo zero il drone sia quasi fermo e il gradiente esista in ogni direzione.
 void initRandomNetwork(NeuralNetwork* nn) {
     for (int i = 0; i < HIDDEN_SIZE; i++) {
-        for (int j = 0; j < INPUT_SIZE; j++) nn->W1[i][j] = random_normal();
-        nn->b1[i] = random_normal();
+        for (int j = 0; j < INPUT_SIZE; j++) nn->W1[i][j] = random_normal() * 0.01;
+        nn->b1[i] = random_normal() * 0.01;
     }
     for (int i = 0; i < OUTPUT_SIZE; i++) {
-        for (int j = 0; j < HIDDEN_SIZE; j++) nn->W2[i][j] = random_normal();
-        nn->b2[i] = random_normal();
+        for (int j = 0; j < HIDDEN_SIZE; j++) nn->W2[i][j] = random_normal() * 0.01;
+        nn->b2[i] = random_normal() * 0.01;
     }
     nn->fitness_cost = 0.0;
 }

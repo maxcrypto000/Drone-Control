@@ -11,9 +11,9 @@
 // ==============================================================================
 // PARAMETRI GLOBALI
 // ==============================================================================
-#define POPULATION_SIZE 50 // Numero di candidati (reti neurali variate) per epoca
+#define POPULATION_SIZE 50 // Torniamo a 50 candidati (più veloci per iterare le epoche)
 #define ALPHA 0.05         // Tasso di apprendimento (Learning Rate) iniziale
-#define NUM_EPOCHS 1000    // Quante generazioni (epoche) l'algoritmo genetico eseguirà
+#define NUM_EPOCHS 1000    // Torniamo a 1000 epoche
 
 // Struttura di comodo per aggregare lo stato di un singolo drone
 typedef struct {
@@ -26,29 +26,33 @@ typedef struct {
 } DroneState;
 
 // ==============================================================================
-// FUNZIONE DI REWARD (LA "FITNESS" DA MASSIMIZZARE)
+// FUNZIONE DI REWARD
 // ==============================================================================
-// Questa funzione stabilisce quanto "bravo" è il drone. Più è alta, meglio è.
-// Noi penalizziamo il drone in proporzione alla sua distanza dal centro esatto.
+// Riscriviamo la reward da zero: se il drone è nel quadrato di pattugliamento,
+// il costo è 0 (è felice). Se esce, calcoliamo la distanza minima dal bordo.
+// Questa "penalità soffice" crea un gradiente continuo verso la scatola.
 double getReward(DroneState drone, DroneState all_drones[], int num_drones) {
     double reward = 0.0;
     
-    // Il punto esatto che i droni devono pattugliare
-    double center_x = 20.0;
-    double center_y = -9.0;
-    double center_z = 0.0;
+    // Distanza dal box di pattugliamento: X[10, 30], Y[-10, -8], Z[-10, 10]
+    double dx = 0.0, dy = 0.0, dz = 0.0;
     
-    // Penalità "densa": usiamo il quadrato della distanza per avere una "buca" convessa.
-    // L'algoritmo genetico percepirà un gradiente perfetto che lo tira verso il centro.
-    double dist_sq = pow(drone.x - center_x, 2) + pow(drone.z - center_z, 2) + pow(drone.y - center_y, 2);
-    reward -= dist_sq;
+    if (drone.x < 10.0) dx = 10.0 - drone.x;
+    else if (drone.x > 30.0) dx = drone.x - 30.0;
     
-    // Se il drone è esattamente all'interno dell'area desiderata, diamo un premio forte!
-    if (drone.x >= 10.0 && drone.x <= 30.0 &&
-        drone.z >= -10.0 && drone.z <= 10.0 && 
-        drone.y >= -10.0 && drone.y <= -8.0) {
-        reward += 500.0;
-    }
+    if (drone.y < -10.0) dy = -10.0 - drone.y;
+    else if (drone.y > -8.0) dy = drone.y - (-8.0);
+    
+    if (drone.z < -10.0) dz = -10.0 - drone.z;
+    else if (drone.z > 10.0) dz = drone.z - 10.0;
+    
+    // Distanza euclidea dal bordo più vicino della scatola
+    double dist = sqrt(dx*dx + dy*dy + dz*dz);
+    
+    // Penalità proporzionale alla distanza.
+    // L'algoritmo cercherà di portare la distanza a 0 (nessuna penalità).
+    reward -= dist * 10.0;
+    
     return reward;
 }
 
