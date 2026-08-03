@@ -115,18 +115,13 @@ equation
     // 2. Calcolo distanza minima basata sui pacchetti ritardati
     min_dist = calculate_min_dist(known_swarm_x, known_swarm_y, known_swarm_z, drone_index);
     
-    // 3. Logica di Ritorno alla Base
-    if B < 20.0 then
-      is_returning = true;
-    elseif B > 80.0 then
-      is_returning = false;
-    else
-      is_returning = pre(is_returning);
-    end if;
+    // 3. Logica Ritorno alla Base DISABILITATA
+    // (Per ora vogliamo che i droni imparino solo a pattugliare l'area senza fuggire quando si scaricano)
+    is_returning = false;
 
-    target_x = if is_returning then base_x else 20.0; // Centro area pattugliamento (X: 10..30)
-    target_y = if is_returning then base_y else -9.0; // Centro area pattugliamento (Y: -10..-8)
-    target_z = if is_returning then base_z else 10.0; // Centro area pattugliamento (Z: 0..20)
+    target_x = 20.0; // Centro area pattugliamento (X: 10..30)
+    target_y = -9.0; // Centro area pattugliamento (Y: -10..-8)
+    target_z = 10.0; // Centro area pattugliamento (Z: 0..20)
     
     // 4. Elaborazione della Rete Neurale
     // NOTA: il drone usa la SUA VERA POSIZIONE (x,y,z) e ID, ma la distanza in base ai pacchetti

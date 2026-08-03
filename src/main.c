@@ -163,6 +163,14 @@ int run_worker(int worker_id) {
         fmi2Real last_ai_ux[4] = {0}, last_ai_uy[4] = {0}, last_ai_uz[4] = {0};
         double total_swarm_reward = 0.0;
         int is_returning[4] = {0, 0, 0, 0};
+        
+        // Heatmap temporale per il Grid Coverage
+        double last_visited[20][20];
+        for (int gx = 0; gx < 20; gx++) {
+            for (int gz = 0; gz < 20; gz++) {
+                last_visited[gx][gz] = -10.0; // Inizializzato a -10 per avere un premio già all'inizio
+            }
+        }
 
         NeuralNetwork candidate_nn;
         set_parameters(&candidate_nn, theta_candidate);
@@ -244,6 +252,23 @@ int run_worker(int worker_id) {
                 current_swarm[i].is_broadcasting_return = is_returning[i];
 
                 total_swarm_reward += getReward(current_swarm[i], current_swarm, 4);
+                
+                // --- HEATMAP COVERAGE REWARD ---
+                // Calcoliamo le coordinate della griglia (celle 1x1m, partendo dall'angolo 10,-10)
+                int gx = (int)(current_swarm[i].x - 10.0);
+                int gz = (int)(current_swarm[i].z + 10.0);
+                
+                // Se il drone è all'interno della zona 20x20
+                if (gx >= 0 && gx < 20 && gz >= 0 && gz < 20) {
+                    double time_since_last = time_sim - last_visited[gx][gz];
+                    
+                    // Più tempo è passato dall'ultima visita, più il premio è alto!
+                    // Moltiplichiamo per 0.1 per bilanciare il premio con le penalità di uscita.
+                    total_swarm_reward += time_since_last * 0.1;
+                    
+                    // La cella è appena stata visitata, il suo "calore" si azzera
+                    last_visited[gx][gz] = time_sim;
+                }
             }
 
             // Fai avanzare la fisica OpenModelica di 0.1 secondi
