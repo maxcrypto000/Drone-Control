@@ -129,8 +129,8 @@ equation
     (ai_ux, ai_uy, ai_uz) = get_ai_thrust(x, y, z, B, min_dist, (drone_index - 1) / (N - 1), target_x - x, target_y - y, target_z - z, time);
   end when;
 
-  // DINAMICA CONTINUA
-  is_active = (B > 0.0) and (not is_failed);
+  // DINAMICA CONTINUA Aggiungi (B > 0.0) and  dopo 
+  is_active = (not is_failed);
   
   // Le spinte applicate sono quelle decise all'ultimo tick di rete (Zero-Order Hold)
   ux_eff = if is_active then ai_ux else 0.0;

@@ -29,13 +29,13 @@ void get_ai_thrust(double x, double y, double z, double bat, double min_dist, do
     }
     
     // Normalizziamo le distanze relative alla base (il mondo è largo 40m e alto 10m)
-    double inputs[9] = {x/20.0, y/20.0, z/10.0, bat/100.0, min_dist/40.0, drone_id, delta_x/40.0, delta_y/40.0, delta_z/10.0};
+    double inputs[9] = {x/20.0, y/20.0, z/10.0, 1.0, min_dist/40.0, drone_id, delta_x/40.0, delta_y/40.0, delta_z/10.0};
     double outputs[3];
     forward_pass(&nn, inputs, outputs);
     
-    *ux = outputs[0] * 10.0;
-    *uy = outputs[1] * 10.0;
-    *uz = outputs[2] * 10.0;
+    *ux = outputs[0] * 15.0; // Velocità aumentata a 15.0
+    *uy = outputs[1] * 15.0;
+    *uz = outputs[2] * 15.0;
 }
 
 // Ritorna 1 se il pacchetto viene perso (drop_prob è la probabilità, es. 0.2 per 20%)

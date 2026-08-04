@@ -31,7 +31,7 @@ typedef struct {
 // Riscriviamo la reward da zero: se il drone è nel quadrato di pattugliamento,
 // il costo è 0 (è felice). Se esce, calcoliamo la distanza minima dal bordo.
 // Questa "penalità soffice" crea un gradiente continuo verso la scatola.
-double getReward(DroneState drone, DroneState all_drones[], int num_drones) {
+double getReward(DroneState drone, DroneState all_drones[], int num_drones, double last_visited[20][20], double time_sim) {
     double reward = 0.0;
     
     // Distanza dal box di pattugliamento: X[10, 30], Y[-10, -8], Z[-10, 10]
@@ -52,6 +52,34 @@ double getReward(DroneState drone, DroneState all_drones[], int num_drones) {
     // Penalità proporzionale alla distanza.
     // L'algoritmo cercherà di portare la distanza a 0 (nessuna penalità).
     reward -= dist * 10.0;
+    
+    // --- HEATMAP COVERAGE REWARD (3x3 AREA) ---
+    // Calcoliamo le coordinate della griglia (celle 1x1m, partendo dall'angolo 10,-10)
+    int center_gx = (int)(drone.x - 10.0);
+    int center_gz = (int)(drone.z + 10.0);
+    
+    // Aggiorniamo un'area 5x5 attorno al drone
+    for (int dx = -2; dx <= 2; dx++) {
+        for (int dz = -2; dz <= 2; dz++) {
+            int gx = center_gx + dx;
+            int gz = center_gz + dz;
+            
+            // Controlliamo che la cella rientri nei bordi 20x20
+            if (gx >= 0 && gx < 20 && gz >= 0 && gz < 20) {
+                double time_since_last = time_sim - last_visited[gx][gz];
+                
+                // TETTO MASSIMO (CAPPING): Evitiamo che il premio esplorativo 
+                // cresca all'infinito su 1000 secondi scavalcando la penalità dei bordi
+                // if (time_since_last > 50.0) time_since_last = 50.0;
+                
+                // Aggiungiamo un premio per la cella esplorata
+                reward += time_since_last * 0.02; // Bilanciato per le 25 celle (5x5)
+                
+                // Resettiamo il tempo di visita della cella
+                last_visited[gx][gz] = time_sim;
+            }
+        }
+    }
     
     return reward;
 }
@@ -151,7 +179,7 @@ int run_worker(int worker_id) {
         // Da questo punto in poi, i 50 Worker girano in parallelo al 100% senza interferirsi!
         fmi2Real time_sim = 0.1;
         fmi2Real step_size = 0.1;
-        fmi2Real stop_time = 60.0;
+        fmi2Real stop_time = 150.0; // Aumentato da 60 a 150 per penalizzare i drift lenti
         
         fmi2ValueReference vr_pos_x[] = {352, 353, 354, 355};
         fmi2ValueReference vr_pos_y[] = {356, 357, 358, 359};
@@ -209,7 +237,7 @@ int run_worker(int worker_id) {
                     inputs[0] = pos_x[i] / 20.0;
                     inputs[1] = pos_y[i] / 20.0; 
                     inputs[2] = pos_z[i] / 10.0; 
-                    inputs[3] = bat[i] / 100.0;  
+                    inputs[3] = 1.0; // NASCONDIAMO LA BATTERIA: evita l'overfitting temporale!
                     
                     double min_dist = 9999.0;
                     for (int j = 0; j < 4; j++) {
@@ -229,9 +257,9 @@ int run_worker(int worker_id) {
                     double outputs[OUTPUT_SIZE];
                     forward_pass(&candidate_nn, inputs, outputs);
 
-                    last_ai_ux[i] = outputs[0] * 10.0;
-                    last_ai_uy[i] = outputs[1] * 10.0;
-                    last_ai_uz[i] = outputs[2] * 10.0;
+                    last_ai_ux[i] = outputs[0] * 15.0; // Velocità aumentata (era 10.0)
+                    last_ai_uy[i] = outputs[1] * 15.0;
+                    last_ai_uz[i] = outputs[2] * 15.0;
                 }
             }
 
@@ -251,24 +279,7 @@ int run_worker(int worker_id) {
                 current_swarm[i].uz = last_ai_uz[i];
                 current_swarm[i].is_broadcasting_return = is_returning[i];
 
-                total_swarm_reward += getReward(current_swarm[i], current_swarm, 4);
-                
-                // --- HEATMAP COVERAGE REWARD ---
-                // Calcoliamo le coordinate della griglia (celle 1x1m, partendo dall'angolo 10,-10)
-                int gx = (int)(current_swarm[i].x - 10.0);
-                int gz = (int)(current_swarm[i].z + 10.0);
-                
-                // Se il drone è all'interno della zona 20x20
-                if (gx >= 0 && gx < 20 && gz >= 0 && gz < 20) {
-                    double time_since_last = time_sim - last_visited[gx][gz];
-                    
-                    // Più tempo è passato dall'ultima visita, più il premio è alto!
-                    // Moltiplichiamo per 0.1 per bilanciare il premio con le penalità di uscita.
-                    total_swarm_reward += time_since_last * 0.1;
-                    
-                    // La cella è appena stata visitata, il suo "calore" si azzera
-                    last_visited[gx][gz] = time_sim;
-                }
+                total_swarm_reward += getReward(current_swarm[i], current_swarm, 4, last_visited, time_sim);
             }
 
             // Fai avanzare la fisica OpenModelica di 0.1 secondi
@@ -481,12 +492,14 @@ int main(int argc, char *argv[]) {
         }
 
         // 8. PULIZIA E CHIUSURA
-        // Eliminiamo i file dei pesi per inviare il "segnale di terminazione" ai worker e premiamo START un'ultima volta.
+        // Terminazione forzata e sicura dei processi Worker (evita stalli dovuti a file bloccati)
         for (int p = 0; p < POPULATION_SIZE; p++) {
+            TerminateProcess(hProcesses[p], 0);
+            
+            // Pulizia dei file spazzatura
             char wfile[256];
             sprintf(wfile, "worker_%d_weights.bin", p);
             remove(wfile); 
-            SetEvent(hStartEvents[p]); 
         }
         
         // Attendiamo che i processi si chiudano per davvero
