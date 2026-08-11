@@ -108,56 +108,54 @@ int DroneSwarm_initialAnalyticJacobianA(DATA* data, threadData_t *threadData, JA
 
   FILE* pFile = openSparsePatternFile(data, threadData, "DroneSwarm_JacA.bin");
   
-  initJacobian(jacobian, 28, 28, 0, NULL, DroneSwarm_functionJacA_column, NULL, NULL);
-  jacobian->sparsePattern = allocSparsePattern(28, 256, 16);
+  initJacobian(jacobian, 24, 24, 0, NULL, DroneSwarm_functionJacA_column, NULL, NULL);
+  jacobian->sparsePattern = allocSparsePattern(24, 192, 15);
   jacobian->availability = JACOBIAN_ONLY_SPARSITY;
   jacobian->isRowEval = 0 /* false */;
   
   /* read lead index of compressed sparse column */
-  count = omc_fread(jacobian->sparsePattern->leadindex, sizeof(unsigned int), 28+1, pFile, FALSE);
-  if (count != 28+1) {
-    throwStreamPrint(threadData, "Error while reading lead index list of sparsity pattern. Expected %d, got %zu", 28+1, count);
+  count = omc_fread(jacobian->sparsePattern->leadindex, sizeof(unsigned int), 24+1, pFile, FALSE);
+  if (count != 24+1) {
+    throwStreamPrint(threadData, "Error while reading lead index list of sparsity pattern. Expected %d, got %zu", 24+1, count);
   }
   
   /* read sparse index */
-  count = omc_fread(jacobian->sparsePattern->index, sizeof(unsigned int), 256, pFile, FALSE);
-  if (count != 256) {
-    throwStreamPrint(threadData, "Error while reading row index list of sparsity pattern. Expected %d, got %zu", 256, count);
+  count = omc_fread(jacobian->sparsePattern->index, sizeof(unsigned int), 192, pFile, FALSE);
+  if (count != 192) {
+    throwStreamPrint(threadData, "Error while reading row index list of sparsity pattern. Expected %d, got %zu", 192, count);
   }
   
   /* write color array */
   /* color 1 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 1, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 1, 1, 24);
   /* color 2 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 2, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 2, 1, 24);
   /* color 3 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 3, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 3, 1, 24);
   /* color 4 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 4, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 4, 1, 24);
   /* color 5 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 5, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 5, 1, 24);
   /* color 6 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 6, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 6, 1, 24);
   /* color 7 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 7, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 7, 1, 24);
   /* color 8 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 8, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 8, 1, 24);
   /* color 9 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 9, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 9, 1, 24);
   /* color 10 with 4 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 10, 4, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 10, 4, 24);
   /* color 11 with 4 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 11, 4, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 11, 4, 24);
   /* color 12 with 4 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 12, 4, 28);
-  /* color 13 with 4 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 13, 4, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 12, 4, 24);
+  /* color 13 with 1 columns */
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 13, 1, 24);
   /* color 14 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 14, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 14, 1, 24);
   /* color 15 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 15, 1, 28);
-  /* color 16 with 1 columns */
-  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 16, 1, 28);
+  readSparsePatternColor(threadData, pFile, jacobian->sparsePattern->colorCols, 15, 1, 24);
   
   omc_fclose(pFile);
   

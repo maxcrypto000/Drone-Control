@@ -1,0 +1,5 @@
+loadModel(Modelica);
+loadFile("UnderwaterDrone.mo");
+loadFile("DroneSwarm.mo");
+buildModelFMU(DroneSwarm, version="2.0", fmiType="cs", platforms={"static"});
+getErrorString();

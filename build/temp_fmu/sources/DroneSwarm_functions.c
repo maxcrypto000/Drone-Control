@@ -7,103 +7,20 @@ extern "C" {
 #include "DroneSwarm_includes.h"
 
 
-DLLDirection
-modelica_real omc_DroneSwarm_drones_calculate__min__dist(threadData_t *threadData, real_array _x, real_array _y, real_array _z, modelica_integer _target_idx)
-{
-  modelica_real _min_d;
-  modelica_real tmp1;
-  modelica_real tmp2;
-  modelica_real tmp3;
-  modelica_real tmp4;
-  modelica_integer tmp5;
-  modelica_integer tmp6;
-  modelica_integer tmp7;
-  modelica_integer tmp8;
-  _tailrecursive: OMC_LABEL_UNUSED
-  // _min_d has no default value.
-  _min_d = 9999.0;
-
-  tmp8 = size_of_dimension_base_array(_x, ((modelica_integer) 1));
-  tmp5 = ((modelica_integer) 1); tmp6 = 1; tmp7 = tmp8;
-  if(!(((tmp6 > 0) && (tmp5 > tmp7)) || ((tmp6 < 0) && (tmp5 < tmp7))))
-  {
-    modelica_integer _j;
-    for(_j = ((modelica_integer) 1); in_range_integer(_j, tmp5, tmp7); _j += tmp6)
-    {
-      if((_j != _target_idx))
-      {
-        tmp1 = real_array_get(_x, 1, _target_idx) - real_array_get(_x, 1, _j);
-        tmp2 = real_array_get(_y, 1, _target_idx) - real_array_get(_y, 1, _j);
-        tmp3 = real_array_get(_z, 1, _target_idx) - real_array_get(_z, 1, _j);
-        tmp4 = (tmp1 * tmp1) + (tmp2 * tmp2) + (tmp3 * tmp3);
-        if(!(tmp4 >= 0.0))
-        {
-          FILE_INFO info = {"",0,0,0,0,0};
-          omc_assert(threadData, info, "Model error: Argument of sqrt((x[target_idx] - x[j]) ^ 2.0 + (y[target_idx] - y[j]) ^ 2.0 + (z[target_idx] - z[j]) ^ 2.0) was %g should be >= 0", tmp4);
-        }
-        _min_d = fmin(_min_d,sqrt(tmp4));
-      }
-    }
-  }
-  _return: OMC_LABEL_UNUSED
-  return _min_d;
-}
-modelica_metatype boxptr_DroneSwarm_drones_calculate__min__dist(threadData_t *threadData, modelica_metatype _x, modelica_metatype _y, modelica_metatype _z, modelica_metatype _target_idx)
-{
-  modelica_integer tmp1;
-  modelica_real _min_d;
-  modelica_metatype out_min_d;
-  tmp1 = mmc_unbox_integer(_target_idx);
-  _min_d = omc_DroneSwarm_drones_calculate__min__dist(threadData, *((base_array_t*)_x), *((base_array_t*)_y), *((base_array_t*)_z), tmp1);
-  out_min_d = mmc_mk_rcon(_min_d);
-  return out_min_d;
-}
-
-modelica_integer omc_DroneSwarm_drones_check__packet__loss(threadData_t *threadData, modelica_real _time_val, modelica_real _drone_id, modelica_real _drop_prob)
-{
-  double _time_val_ext;
-  double _drone_id_ext;
-  double _drop_prob_ext;
-  int _is_dropped_ext;
-  modelica_integer _is_dropped;
-  // _is_dropped has no default value.
-  _time_val_ext = (double) _time_val;
-  _drone_id_ext = (double) _drone_id;
-  _drop_prob_ext = (double) _drop_prob;
-  _is_dropped_ext = check_packet_loss(_time_val_ext, _drone_id_ext, _drop_prob_ext);
-  _is_dropped = (modelica_integer)_is_dropped_ext;
-  return _is_dropped;
-}
-modelica_metatype boxptr_DroneSwarm_drones_check__packet__loss(threadData_t *threadData, modelica_metatype _time_val, modelica_metatype _drone_id, modelica_metatype _drop_prob)
-{
-  modelica_real tmp1;
-  modelica_real tmp2;
-  modelica_real tmp3;
-  modelica_integer _is_dropped;
-  modelica_metatype out_is_dropped;
-  tmp1 = mmc_unbox_real(_time_val);
-  tmp2 = mmc_unbox_real(_drone_id);
-  tmp3 = mmc_unbox_real(_drop_prob);
-  _is_dropped = omc_DroneSwarm_drones_check__packet__loss(threadData, tmp1, tmp2, tmp3);
-  out_is_dropped = mmc_mk_icon(_is_dropped);
-  return out_is_dropped;
-}
-
-modelica_real omc_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_real _x, modelica_real _y, modelica_real _z, modelica_real _bat, modelica_real _min_dist, modelica_real _drone_id, modelica_real _delta_x, modelica_real _delta_y, modelica_real _delta_z, modelica_real _current_time, modelica_real *out_uy, modelica_real *out_uz)
+modelica_real omc_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_real _x, modelica_real _y, modelica_real _z, real_array _swarm_x_real, real_array _swarm_y_real, real_array _swarm_z_real, real_array _lidar_grid, modelica_real _drone_id, modelica_real _current_time, modelica_real *out_uy, modelica_real *out_uz)
 {
   double _x_ext;
   double _y_ext;
   double _z_ext;
-  double _bat_ext;
-  double _min_dist_ext;
   double _drone_id_ext;
-  double _delta_x_ext;
-  double _delta_y_ext;
-  double _delta_z_ext;
   double _current_time_ext;
   double _ux_ext;
   double _uy_ext;
   double _uz_ext;
+  const double* _swarm_x_real_c89;
+  const double* _swarm_y_real_c89;
+  const double* _swarm_z_real_c89;
+  const double* _lidar_grid_c89;
   modelica_real _ux;
   modelica_real _uy;
   modelica_real _uz;
@@ -113,14 +30,13 @@ modelica_real omc_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, mo
   _x_ext = (double) _x;
   _y_ext = (double) _y;
   _z_ext = (double) _z;
-  _bat_ext = (double) _bat;
-  _min_dist_ext = (double) _min_dist;
   _drone_id_ext = (double) _drone_id;
-  _delta_x_ext = (double) _delta_x;
-  _delta_y_ext = (double) _delta_y;
-  _delta_z_ext = (double) _delta_z;
   _current_time_ext = (double) _current_time;
-  get_ai_thrust(_x_ext, _y_ext, _z_ext, _bat_ext, _min_dist_ext, _drone_id_ext, _delta_x_ext, _delta_y_ext, _delta_z_ext, _current_time_ext, &_ux_ext, &_uy_ext, &_uz_ext);
+  _swarm_x_real_c89 = data_of_real_c89_array(_swarm_x_real);
+  _swarm_y_real_c89 = data_of_real_c89_array(_swarm_y_real);
+  _swarm_z_real_c89 = data_of_real_c89_array(_swarm_z_real);
+  _lidar_grid_c89 = data_of_real_c89_array(_lidar_grid);
+  get_ai_thrust(_x_ext, _y_ext, _z_ext, _swarm_x_real_c89, _swarm_y_real_c89, _swarm_z_real_c89, _lidar_grid_c89, _drone_id_ext, _current_time_ext, &_ux_ext, &_uy_ext, &_uz_ext);
   _ux = (modelica_real)_ux_ext;
   _uy = (modelica_real)_uy_ext;
   _uz = (modelica_real)_uz_ext;
@@ -128,18 +44,13 @@ modelica_real omc_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, mo
   if (out_uz) { *out_uz = _uz; }
   return _ux;
 }
-modelica_metatype boxptr_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_metatype _x, modelica_metatype _y, modelica_metatype _z, modelica_metatype _bat, modelica_metatype _min_dist, modelica_metatype _drone_id, modelica_metatype _delta_x, modelica_metatype _delta_y, modelica_metatype _delta_z, modelica_metatype _current_time, modelica_metatype *out_uy, modelica_metatype *out_uz)
+modelica_metatype boxptr_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_metatype _x, modelica_metatype _y, modelica_metatype _z, modelica_metatype _swarm_x_real, modelica_metatype _swarm_y_real, modelica_metatype _swarm_z_real, modelica_metatype _lidar_grid, modelica_metatype _drone_id, modelica_metatype _current_time, modelica_metatype *out_uy, modelica_metatype *out_uz)
 {
   modelica_real tmp1;
   modelica_real tmp2;
   modelica_real tmp3;
   modelica_real tmp4;
   modelica_real tmp5;
-  modelica_real tmp6;
-  modelica_real tmp7;
-  modelica_real tmp8;
-  modelica_real tmp9;
-  modelica_real tmp10;
   modelica_real _uy;
   modelica_real _uz;
   modelica_real _ux;
@@ -147,18 +58,183 @@ modelica_metatype boxptr_DroneSwarm_drones_get__ai__thrust(threadData_t *threadD
   tmp1 = mmc_unbox_real(_x);
   tmp2 = mmc_unbox_real(_y);
   tmp3 = mmc_unbox_real(_z);
-  tmp4 = mmc_unbox_real(_bat);
-  tmp5 = mmc_unbox_real(_min_dist);
-  tmp6 = mmc_unbox_real(_drone_id);
-  tmp7 = mmc_unbox_real(_delta_x);
-  tmp8 = mmc_unbox_real(_delta_y);
-  tmp9 = mmc_unbox_real(_delta_z);
-  tmp10 = mmc_unbox_real(_current_time);
-  _ux = omc_DroneSwarm_drones_get__ai__thrust(threadData, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, &_uy, &_uz);
+  tmp4 = mmc_unbox_real(_drone_id);
+  tmp5 = mmc_unbox_real(_current_time);
+  _ux = omc_DroneSwarm_drones_get__ai__thrust(threadData, tmp1, tmp2, tmp3, *((base_array_t*)_swarm_x_real), *((base_array_t*)_swarm_y_real), *((base_array_t*)_swarm_z_real), *((base_array_t*)_lidar_grid), tmp4, tmp5, &_uy, &_uz);
   out_ux = mmc_mk_rcon(_ux);
   if (out_uy) { *out_uy = mmc_mk_rcon(_uy); }
   if (out_uz) { *out_uz = mmc_mk_rcon(_uz); }
   return out_ux;
+}
+
+DLLDirection
+real_array omc_DroneSwarm_drones_scan__lidar(threadData_t *threadData, modelica_real _drone_x, modelica_real _drone_y, modelica_real _drone_z, real_array _swarm_x, real_array _swarm_y, real_array _swarm_z, modelica_integer _my_idx, modelica_integer _res, modelica_real _max_range, modelica_real _x_min, modelica_real _x_max, modelica_real _y_min, modelica_real _y_max, modelica_real _z_min, modelica_real _z_max)
+{
+  real_array _cloud;
+  modelica_real _rel_x;
+  modelica_real _rel_y;
+  modelica_real _rel_z;
+  modelica_integer _idx_x;
+  modelica_integer _idx_y;
+  modelica_integer _idx_z;
+  modelica_real _voxel_size;
+  modelica_real _glob_x;
+  modelica_real _glob_y;
+  modelica_real _glob_z;
+  modelica_real tmp1;
+  real_array tmp2;
+  modelica_real tmp3;
+  modelica_integer tmp4;
+  modelica_integer tmp5;
+  modelica_integer tmp6;
+  modelica_integer tmp7;
+  modelica_integer tmp8;
+  modelica_integer tmp9;
+  modelica_integer tmp10;
+  modelica_integer tmp11;
+  modelica_integer tmp12;
+  modelica_real tmp13;
+  modelica_real tmp14;
+  modelica_real tmp15;
+  modelica_integer tmp16;
+  modelica_integer tmp17;
+  modelica_integer tmp18;
+  modelica_integer tmp19;
+  _tailrecursive: OMC_LABEL_UNUSED
+  alloc_real_array(&(_cloud), 3, (_index_t)_res, (_index_t)_res, (_index_t)_res); // _cloud has no default value.
+  // _rel_x has no default value.
+  // _rel_y has no default value.
+  // _rel_z has no default value.
+  // _idx_x has no default value.
+  // _idx_y has no default value.
+  // _idx_z has no default value.
+  // _voxel_size has no default value.
+  // _glob_x has no default value.
+  // _glob_y has no default value.
+  // _glob_z has no default value.
+  tmp1 = 0.0;
+  fill_alloc_real_array(&tmp2, tmp1, 3, _res, _res, _res);
+  real_array_copy_data(tmp2, _cloud);
+
+  tmp3 = ((modelica_real)_res);
+  if (tmp3 == 0) {throwStreamPrint(threadData, "Division by zero %s in function context", "2.0 * max_range / /*Real*/(res)");}
+  _voxel_size = ((2.0) * (_max_range)) / tmp3;
+
+  tmp10 = ((modelica_integer) 1); tmp11 = 1; tmp12 = _res;
+  if(!(((tmp11 > 0) && (tmp10 > tmp12)) || ((tmp11 < 0) && (tmp10 < tmp12))))
+  {
+    modelica_integer _i;
+    for(_i = ((modelica_integer) 1); in_range_integer(_i, tmp10, tmp12); _i += tmp11)
+    {
+      tmp7 = ((modelica_integer) 1); tmp8 = 1; tmp9 = _res;
+      if(!(((tmp8 > 0) && (tmp7 > tmp9)) || ((tmp8 < 0) && (tmp7 < tmp9))))
+      {
+        modelica_integer _j;
+        for(_j = ((modelica_integer) 1); in_range_integer(_j, tmp7, tmp9); _j += tmp8)
+        {
+          tmp4 = ((modelica_integer) 1); tmp5 = 1; tmp6 = _res;
+          if(!(((tmp5 > 0) && (tmp4 > tmp6)) || ((tmp5 < 0) && (tmp4 < tmp6))))
+          {
+            modelica_integer _k;
+            for(_k = ((modelica_integer) 1); in_range_integer(_k, tmp4, tmp6); _k += tmp5)
+            {
+              _rel_x = (((modelica_real)_i) - 0.5) * (_voxel_size) - _max_range;
+
+              _rel_y = (((modelica_real)_j) - 0.5) * (_voxel_size) - _max_range;
+
+              _rel_z = (((modelica_real)_k) - 0.5) * (_voxel_size) - _max_range;
+
+              _glob_x = _drone_x + _rel_x;
+
+              _glob_y = _drone_y + _rel_y;
+
+              _glob_z = _drone_z + _rel_z;
+
+              if(((((((_glob_x <= _x_min) || (_glob_x >= _x_max)) || (_glob_y <= _y_min)) || (_glob_y >= _y_max)) || (_glob_z <= _z_min)) || (_glob_z >= _z_max)))
+              {
+                real_array_get(_cloud, 3, _i, _j, _k) = 1.0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  tmp19 = size_of_dimension_base_array(_swarm_x, ((modelica_integer) 1));
+  tmp16 = ((modelica_integer) 1); tmp17 = 1; tmp18 = tmp19;
+  if(!(((tmp17 > 0) && (tmp16 > tmp18)) || ((tmp17 < 0) && (tmp16 < tmp18))))
+  {
+    modelica_integer _j;
+    for(_j = ((modelica_integer) 1); in_range_integer(_j, tmp16, tmp18); _j += tmp17)
+    {
+      if((_j != _my_idx))
+      {
+        _rel_x = real_array_get(_swarm_x, 1, _j) - _drone_x;
+
+        _rel_y = real_array_get(_swarm_y, 1, _j) - _drone_y;
+
+        _rel_z = real_array_get(_swarm_z, 1, _j) - _drone_z;
+
+        if((((fabs(_rel_x) <= _max_range) && (fabs(_rel_y) <= _max_range)) && (fabs(_rel_z) <= _max_range)))
+        {
+          tmp13 = (2.0) * (_max_range);
+          if (tmp13 == 0) {throwStreamPrint(threadData, "Division by zero %s in function context", "(rel_x + max_range) / (2.0 * max_range)");}
+          _idx_x = ((modelica_integer)floor(floor(((_rel_x + _max_range) / tmp13) * (((modelica_real)_res - ((modelica_integer) 1)))))) + ((modelica_integer) 1);
+
+          tmp14 = (2.0) * (_max_range);
+          if (tmp14 == 0) {throwStreamPrint(threadData, "Division by zero %s in function context", "(rel_y + max_range) / (2.0 * max_range)");}
+          _idx_y = ((modelica_integer)floor(floor(((_rel_y + _max_range) / tmp14) * (((modelica_real)_res - ((modelica_integer) 1)))))) + ((modelica_integer) 1);
+
+          tmp15 = (2.0) * (_max_range);
+          if (tmp15 == 0) {throwStreamPrint(threadData, "Division by zero %s in function context", "(rel_z + max_range) / (2.0 * max_range)");}
+          _idx_z = ((modelica_integer)floor(floor(((_rel_z + _max_range) / tmp15) * (((modelica_real)_res - ((modelica_integer) 1)))))) + ((modelica_integer) 1);
+
+          _idx_x = modelica_integer_max((modelica_integer)(((modelica_integer) 1)),(modelica_integer)(modelica_integer_min((modelica_integer)(_res),(modelica_integer)(_idx_x))));
+
+          _idx_y = modelica_integer_max((modelica_integer)(((modelica_integer) 1)),(modelica_integer)(modelica_integer_min((modelica_integer)(_res),(modelica_integer)(_idx_y))));
+
+          _idx_z = modelica_integer_max((modelica_integer)(((modelica_integer) 1)),(modelica_integer)(modelica_integer_min((modelica_integer)(_res),(modelica_integer)(_idx_z))));
+
+          real_array_get(_cloud, 3, _idx_x, _idx_y, _idx_z) = 1.0;
+        }
+      }
+    }
+  }
+  _return: OMC_LABEL_UNUSED
+  return _cloud;
+}
+modelica_metatype boxptr_DroneSwarm_drones_scan__lidar(threadData_t *threadData, modelica_metatype _drone_x, modelica_metatype _drone_y, modelica_metatype _drone_z, modelica_metatype _swarm_x, modelica_metatype _swarm_y, modelica_metatype _swarm_z, modelica_metatype _my_idx, modelica_metatype _res, modelica_metatype _max_range, modelica_metatype _x_min, modelica_metatype _x_max, modelica_metatype _y_min, modelica_metatype _y_max, modelica_metatype _z_min, modelica_metatype _z_max)
+{
+  modelica_real tmp1;
+  modelica_real tmp2;
+  modelica_real tmp3;
+  modelica_integer tmp4;
+  modelica_integer tmp5;
+  modelica_real tmp6;
+  modelica_real tmp7;
+  modelica_real tmp8;
+  modelica_real tmp9;
+  modelica_real tmp10;
+  modelica_real tmp11;
+  modelica_real tmp12;
+  real_array _cloud;
+  modelica_metatype out_cloud;
+  tmp1 = mmc_unbox_real(_drone_x);
+  tmp2 = mmc_unbox_real(_drone_y);
+  tmp3 = mmc_unbox_real(_drone_z);
+  tmp4 = mmc_unbox_integer(_my_idx);
+  tmp5 = mmc_unbox_integer(_res);
+  tmp6 = mmc_unbox_real(_max_range);
+  tmp7 = mmc_unbox_real(_x_min);
+  tmp8 = mmc_unbox_real(_x_max);
+  tmp9 = mmc_unbox_real(_y_min);
+  tmp10 = mmc_unbox_real(_y_max);
+  tmp11 = mmc_unbox_real(_z_min);
+  tmp12 = mmc_unbox_real(_z_max);
+  _cloud = omc_DroneSwarm_drones_scan__lidar(threadData, tmp1, tmp2, tmp3, *((base_array_t*)_swarm_x), *((base_array_t*)_swarm_y), *((base_array_t*)_swarm_z), tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12);
+  out_cloud = mmc_mk_modelica_array(_cloud);
+  return out_cloud;
 }
 
 DLLDirection

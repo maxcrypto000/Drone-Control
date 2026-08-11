@@ -40,6 +40,32 @@ double getReward(DroneState drone, DroneState all_drones[], int num_drones, doub
     
     if (drone.z < -10.0) penalty -= (-10.0 - drone.z) * 10.0;
     else if (drone.z > 10.0) penalty -= (drone.z - 10.0) * 10.0;
+
+    // Reward per l'esplorazione (Heatmap)
+    int gx = (int)floor(drone.x);
+    int gz = (int)floor(drone.z + 10.0);
+    
+    // Limiti di sicurezza
+    if (gx < 0) gx = 0; if (gx > 19) gx = 19;
+    if (gz < 0) gz = 0; if (gz > 19) gz = 19;
+
+    double exploration_reward = 0.0;
+    // Il drone "vede" un'area 5x5 sotto di sé
+    for (int i = -2; i <= 2; i++) {
+        for (int j = -2; j <= 2; j++) {
+            int cx = gx + i;
+            int cz = gz + j;
+            // Controlla che la cella vista sia dentro la mappa
+            if (cx >= 0 && cx < 20 && cz >= 0 && cz < 20) {
+                double time_since_visited = time_sim - last_visited[cx][cz];
+                // Più tempo è passato, maggiore è il reward.
+                exploration_reward += time_since_visited * 0.1;
+                // Segna la cella come appena visitata
+                last_visited[cx][cz] = time_sim;
+            }
+        }
+    }
+    penalty += exploration_reward;
     
     // Penalità Collisioni con altri droni
     for (int i=0; i<num_drones; i++) {
@@ -103,7 +129,7 @@ int run_worker(int worker_id) {
         // Si risveglierà solo quando il Master preme il pulsante "START" (SetEvent(hStart)).
         WaitForSingleObject(hStart, INFINITE);
 
-        // 3. LETTURA DEI PROPRI PESI (theta)
+        // 3. LETTURA DEI PROPRI PESI (theta) E START POSITIONS
         char weight_file[256];
         sprintf(weight_file, "worker_%d_weights.bin", worker_id);
         FILE *f_in = fopen(weight_file, "rb");
@@ -115,6 +141,18 @@ int run_worker(int worker_id) {
         double theta_candidate[PARAM_COUNT];
         fread(theta_candidate, sizeof(double), PARAM_COUNT, f_in);
         fclose(f_in);
+
+        // Leggiamo le posizioni di partenza per questa epoca
+        double starts_x[4] = {5.0, 15.0, 15.0, 5.0};
+        double starts_y[4] = {-9.0, -9.0, -9.0, -9.0};
+        double starts_z[4] = {-5.0, -5.0, 5.0, 5.0};
+        FILE *f_starts = fopen("starts.bin", "rb");
+        if (f_starts) {
+            fread(starts_x, sizeof(double), 4, f_starts);
+            fread(starts_y, sizeof(double), 4, f_starts);
+            fread(starts_z, sizeof(double), 4, f_starts);
+            fclose(f_starts);
+        }
 
         // 4. SINCRONIZZAZIONE DELLA BOTTIGLIA DI COLLO (Il file condiviso della DLL)
         // La FMU è programmata per leggere SEMPRE da "build/weights.bin" al tempo t=0.
@@ -134,6 +172,15 @@ int run_worker(int worker_id) {
         // Resettiamo la fisica a t=0
         fmi2_reset(instance);
         fmi2_setupExperiment(instance, fmi2False, 0.0, 0.0, fmi2True, 60.0);
+        
+        // Impostiamo i parametri di partenza
+        fmi2ValueReference vr_starts_x[] = {1339, 1340, 1341, 1342};
+        fmi2ValueReference vr_starts_y[] = {1343, 1344, 1345, 1346};
+        fmi2ValueReference vr_starts_z[] = {1347, 1348, 1349, 1350};
+        fmi2_setReal(instance, vr_starts_x, 4, starts_x);
+        fmi2_setReal(instance, vr_starts_y, 4, starts_y);
+        fmi2_setReal(instance, vr_starts_z, 4, starts_z);
+
         fmi2_enterInitializationMode(instance);
         fmi2_exitInitializationMode(instance);
 
@@ -310,7 +357,29 @@ int main(int argc, char *argv[]) {
         // ==========================================
         // CICLO DELLE EPOCHE (OpenAI Evolution Strategies)
         // ==========================================
+        
+        double current_starts_x[4] = {5.0, 15.0, 15.0, 5.0};
+        double current_starts_y[4] = {-9.0, -9.0, -9.0, -9.0};
+        double current_starts_z[4] = {-5.0, -5.0, 5.0, 5.0};
+
         for (int epoch = 0; epoch < NUM_EPOCHS; epoch++) {
+            
+            // Cambio punto di partenza ogni 10 epoche
+            if (epoch % 10 == 0) {
+                for (int d = 0; d < 4; d++) {
+                    current_starts_x[d] = ((double)rand() / RAND_MAX) * 20.0;
+                    current_starts_y[d] = -((double)rand() / RAND_MAX) * 10.0;
+                    current_starts_z[d] = (((double)rand() / RAND_MAX) * 20.0) - 10.0;
+                }
+                FILE *fs = fopen("starts.bin", "wb");
+                if (fs) {
+                    fwrite(current_starts_x, sizeof(double), 4, fs);
+                    fwrite(current_starts_y, sizeof(double), 4, fs);
+                    fwrite(current_starts_z, sizeof(double), 4, fs);
+                    fclose(fs);
+                }
+                printf("[Master] Nuove posizioni di partenza generate per l'epoca %d.\n", epoch);
+            }
             
             // 2. CREAZIONE DELLA POPOLAZIONE (Candidati)
             for (int p = 0; p < POPULATION_SIZE; p++) {

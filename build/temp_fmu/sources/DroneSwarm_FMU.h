@@ -5,21 +5,21 @@
 
 // define class name and unique id
 #define MODEL_IDENTIFIER DroneSwarm
-#define MODEL_GUID "{41fc0f6a-9c14-4bca-b808-3a44b94f3e7c}"
+#define MODEL_GUID "{6a67ba6b-c84b-42d1-a804-5fc097e0dbe0}"
 
 // define model size
-#define NUMBER_OF_STATES 28
-#define NUMBER_OF_EVENT_INDICATORS 12
-#define NUMBER_OF_REALS 1278
+#define NUMBER_OF_STATES 24
+#define NUMBER_OF_EVENT_INDICATORS 0
+#define NUMBER_OF_REALS 1666
 #define NUMBER_OF_REAL_INPUTS 0
-#define NUMBER_OF_INTEGERS 40
+#define NUMBER_OF_INTEGERS 44
 #define NUMBER_OF_STRINGS 25
-#define NUMBER_OF_BOOLEANS 27
+#define NUMBER_OF_BOOLEANS 10
 #define NUMBER_OF_EXTERNALFUNCTIONS 0
 
 // define initial state vector as vector of value references
-#define STATES { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 }
-#define STATESDERIVATIVES { 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55 }
+#define STATES { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }
+#define STATESDERIVATIVES { 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47 }
 
 
 #ifdef __cplusplus

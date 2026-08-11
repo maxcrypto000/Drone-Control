@@ -8,12 +8,16 @@ extern "C" {
 
 void DroneSwarm_functionInitialEquations_0(DATA *data, threadData_t *threadData);
 void DroneSwarm_functionInitialEquations_1(DATA *data, threadData_t *threadData);
+void DroneSwarm_functionInitialEquations_2(DATA *data, threadData_t *threadData);
+void DroneSwarm_functionInitialEquations_3(DATA *data, threadData_t *threadData);
 
 int DroneSwarm_functionInitialEquations(DATA *data, threadData_t *threadData)
 {
   data->simulationInfo->discreteCall = 1;
   DroneSwarm_functionInitialEquations_0(data, threadData);
   DroneSwarm_functionInitialEquations_1(data, threadData);
+  DroneSwarm_functionInitialEquations_2(data, threadData);
+  DroneSwarm_functionInitialEquations_3(data, threadData);
   data->simulationInfo->discreteCall = 0;
   
   return 0;

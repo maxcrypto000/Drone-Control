@@ -41,31 +41,9 @@ typedef base_array_t Modelica_Mechanics_MultiBody_Frames_Orientation_array;
 #define Modelica_Mechanics_MultiBody_Frames_Orientation_set(dst,val,...)           generic_array_set(&dst, &val, Modelica_Mechanics_MultiBody_Frames_Orientation_copy_p, sizeof(Modelica_Mechanics_MultiBody_Frames_Orientation), __VA_ARGS__)
 
 DLLDirection
-modelica_real omc_DroneSwarm_drones_calculate__min__dist(threadData_t *threadData, real_array _x, real_array _y, real_array _z, modelica_integer _target_idx);
+modelica_real omc_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_real _x, modelica_real _y, modelica_real _z, real_array _swarm_x_real, real_array _swarm_y_real, real_array _swarm_z_real, real_array _lidar_grid, modelica_real _drone_id, modelica_real _current_time, modelica_real *out_uy, modelica_real *out_uz);
 DLLDirection
-modelica_metatype boxptr_DroneSwarm_drones_calculate__min__dist(threadData_t *threadData, modelica_metatype _x, modelica_metatype _y, modelica_metatype _z, modelica_metatype _target_idx);
-static const MMC_DEFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_calculate__min__dist,2,0) {(void*) boxptr_DroneSwarm_drones_calculate__min__dist,0}};
-#define boxvar_DroneSwarm_drones_calculate__min__dist MMC_REFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_calculate__min__dist)
-
-
-DLLDirection
-modelica_integer omc_DroneSwarm_drones_check__packet__loss(threadData_t *threadData, modelica_real _time_val, modelica_real _drone_id, modelica_real _drop_prob);
-DLLDirection
-modelica_metatype boxptr_DroneSwarm_drones_check__packet__loss(threadData_t *threadData, modelica_metatype _time_val, modelica_metatype _drone_id, modelica_metatype _drop_prob);
-static const MMC_DEFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_check__packet__loss,2,0) {(void*) boxptr_DroneSwarm_drones_check__packet__loss,0}};
-#define boxvar_DroneSwarm_drones_check__packet__loss MMC_REFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_check__packet__loss)
-
-/*
- * The function has annotation(Include=...>) or is builtin
- * the external function definition should be present
- * in one of these files and have this prototype:
- * extern int check_packet_loss(double (*_time_val*), double (*_drone_id*), double (*_drop_prob*));
- */
-
-DLLDirection
-modelica_real omc_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_real _x, modelica_real _y, modelica_real _z, modelica_real _bat, modelica_real _min_dist, modelica_real _drone_id, modelica_real _delta_x, modelica_real _delta_y, modelica_real _delta_z, modelica_real _current_time, modelica_real *out_uy, modelica_real *out_uz);
-DLLDirection
-modelica_metatype boxptr_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_metatype _x, modelica_metatype _y, modelica_metatype _z, modelica_metatype _bat, modelica_metatype _min_dist, modelica_metatype _drone_id, modelica_metatype _delta_x, modelica_metatype _delta_y, modelica_metatype _delta_z, modelica_metatype _current_time, modelica_metatype *out_uy, modelica_metatype *out_uz);
+modelica_metatype boxptr_DroneSwarm_drones_get__ai__thrust(threadData_t *threadData, modelica_metatype _x, modelica_metatype _y, modelica_metatype _z, modelica_metatype _swarm_x_real, modelica_metatype _swarm_y_real, modelica_metatype _swarm_z_real, modelica_metatype _lidar_grid, modelica_metatype _drone_id, modelica_metatype _current_time, modelica_metatype *out_uy, modelica_metatype *out_uz);
 static const MMC_DEFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_get__ai__thrust,2,0) {(void*) boxptr_DroneSwarm_drones_get__ai__thrust,0}};
 #define boxvar_DroneSwarm_drones_get__ai__thrust MMC_REFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_get__ai__thrust)
 
@@ -73,8 +51,16 @@ static const MMC_DEFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_get__ai__thrust,2,0) 
  * The function has annotation(Include=...>) or is builtin
  * the external function definition should be present
  * in one of these files and have this prototype:
- * extern void get_ai_thrust(double (*_x*), double (*_y*), double (*_z*), double (*_bat*), double (*_min_dist*), double (*_drone_id*), double (*_delta_x*), double (*_delta_y*), double (*_delta_z*), double (*_current_time*), double* (*_ux*), double* (*_uy*), double* (*_uz*));
+ * extern void get_ai_thrust(double (*_x*), double (*_y*), double (*_z*), const double* (*_swarm_x_real*), const double* (*_swarm_y_real*), const double* (*_swarm_z_real*), const double* (*_lidar_grid*), double (*_drone_id*), double (*_current_time*), double* (*_ux*), double* (*_uy*), double* (*_uz*));
  */
+
+DLLDirection
+real_array omc_DroneSwarm_drones_scan__lidar(threadData_t *threadData, modelica_real _drone_x, modelica_real _drone_y, modelica_real _drone_z, real_array _swarm_x, real_array _swarm_y, real_array _swarm_z, modelica_integer _my_idx, modelica_integer _res, modelica_real _max_range, modelica_real _x_min, modelica_real _x_max, modelica_real _y_min, modelica_real _y_max, modelica_real _z_min, modelica_real _z_max);
+DLLDirection
+modelica_metatype boxptr_DroneSwarm_drones_scan__lidar(threadData_t *threadData, modelica_metatype _drone_x, modelica_metatype _drone_y, modelica_metatype _drone_z, modelica_metatype _swarm_x, modelica_metatype _swarm_y, modelica_metatype _swarm_z, modelica_metatype _my_idx, modelica_metatype _res, modelica_metatype _max_range, modelica_metatype _x_min, modelica_metatype _x_max, modelica_metatype _y_min, modelica_metatype _y_max, modelica_metatype _z_min, modelica_metatype _z_max);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_scan__lidar,2,0) {(void*) boxptr_DroneSwarm_drones_scan__lidar,0}};
+#define boxvar_DroneSwarm_drones_scan__lidar MMC_REFSTRUCTLIT(boxvar_lit_DroneSwarm_drones_scan__lidar)
+
 
 DLLDirection
 modelica_real omc_Modelica_Math_Vectors_length(threadData_t *threadData, real_array _v);

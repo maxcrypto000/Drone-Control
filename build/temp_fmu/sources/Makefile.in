@@ -43,8 +43,10 @@ CFILES = DroneSwarm.c \
          DroneSwarm_FMU.c \
          DroneSwarm_06inz_part0.c \
          DroneSwarm_06inz_part1.c \
-         DroneSwarm_08bnd_part2.c \
-         DroneSwarm_08bnd_part3.c
+         DroneSwarm_06inz_part2.c \
+         DroneSwarm_06inz_part3.c \
+         DroneSwarm_08bnd_part4.c \
+         DroneSwarm_08bnd_part5.c
 OFILES=$(CFILES:.c=.o)
 
 RUNTIMEDIR=.

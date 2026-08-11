@@ -27,13 +27,12 @@ extern "C" {
 
 #include "DroneSwarm_functions.h"
 
-#define DroneSwarm_drones_calculate__min__dist_index 0
-#define DroneSwarm_drones_check__packet__loss_index 1
-#define DroneSwarm_drones_get__ai__thrust_index 2
-#define Modelica_Math_Vectors_length_index 3
-#define Modelica_Math_Vectors_normalize_index 4
-#define Modelica_Mechanics_MultiBody_Frames_Orientation_index 5
-#define Modelica_Mechanics_MultiBody_Frames_TransformationMatrices_from__nxy_index 6
+#define DroneSwarm_drones_get__ai__thrust_index 0
+#define DroneSwarm_drones_scan__lidar_index 1
+#define Modelica_Math_Vectors_length_index 2
+#define Modelica_Math_Vectors_normalize_index 3
+#define Modelica_Mechanics_MultiBody_Frames_Orientation_index 4
+#define Modelica_Mechanics_MultiBody_Frames_TransformationMatrices_from__nxy_index 5
 
 extern void DroneSwarm_callExternalObjectDestructors(DATA *_data, threadData_t *threadData);
 #if !defined(OMC_NUM_NONLINEAR_SYSTEMS) || OMC_NUM_NONLINEAR_SYSTEMS>0
