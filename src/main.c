@@ -13,75 +13,45 @@
 // ==============================================================================
 #define POPULATION_SIZE 50 // Torniamo a 50 candidati (più veloci per iterare le epoche)
 #define ALPHA 0.05         // Tasso di apprendimento (Learning Rate) iniziale
-#define NUM_EPOCHS 1000    // Torniamo a 1000 epoche
+#define NUM_EPOCHS 500    // Diminuite a 500 come richiesto
 
 // Struttura di comodo per aggregare lo stato di un singolo drone
 typedef struct {
     int id;
     double x, y, z;
-    double target_x, target_y, target_z;
+    double target_x, target_y, target_z; // Possiamo tenere target_x/y/z se serviranno in futuro
     double ux, uy, uz;
-    double battery;
-    int is_broadcasting_return;
 } DroneState;
 
 // ==============================================================================
 // FUNZIONE DI REWARD
 // ==============================================================================
 // Riscriviamo la reward da zero: se il drone è nel quadrato di pattugliamento,
-// il costo è 0 (è felice). Se esce, calcoliamo la distanza minima dal bordo.
-// Questa "penalità soffice" crea un gradiente continuo verso la scatola.
+// il costo è 0 (è felice). Se esce, o se va addosso agli altri, accumula penalità.
 double getReward(DroneState drone, DroneState all_drones[], int num_drones, double last_visited[20][20], double time_sim) {
-    double reward = 0.0;
+    double penalty = 0.0;
     
-    // Distanza dal box di pattugliamento: X[10, 30], Y[-10, -8], Z[-10, 10]
-    double dx = 0.0, dy = 0.0, dz = 0.0;
+    // Penalità Muri: X[0, 20], Y[-10, 0], Z[-10, 10]
+    if (drone.x < 0.0) penalty -= (0.0 - drone.x) * 10.0;
+    else if (drone.x > 20.0) penalty -= (drone.x - 20.0) * 10.0;
     
-    if (drone.x < 10.0) dx = 10.0 - drone.x;
-    else if (drone.x > 30.0) dx = drone.x - 30.0;
+    if (drone.y < -10.0) penalty -= (-10.0 - drone.y) * 10.0;
+    else if (drone.y > 0.0) penalty -= (drone.y - 0.0) * 10.0;
     
-    if (drone.y < -10.0) dy = -10.0 - drone.y;
-    else if (drone.y > -8.0) dy = drone.y - (-8.0);
+    if (drone.z < -10.0) penalty -= (-10.0 - drone.z) * 10.0;
+    else if (drone.z > 10.0) penalty -= (drone.z - 10.0) * 10.0;
     
-    if (drone.z < -10.0) dz = -10.0 - drone.z;
-    else if (drone.z > 10.0) dz = drone.z - 10.0;
-    
-    // Distanza euclidea dal bordo più vicino della scatola
-    double dist = sqrt(dx*dx + dy*dy + dz*dz);
-    
-    // Penalità proporzionale alla distanza.
-    // L'algoritmo cercherà di portare la distanza a 0 (nessuna penalità).
-    reward -= dist * 10.0;
-    
-    // --- HEATMAP COVERAGE REWARD (3x3 AREA) ---
-    // Calcoliamo le coordinate della griglia (celle 1x1m, partendo dall'angolo 10,-10)
-    int center_gx = (int)(drone.x - 10.0);
-    int center_gz = (int)(drone.z + 10.0);
-    
-    // Aggiorniamo un'area 5x5 attorno al drone
-    for (int dx = -2; dx <= 2; dx++) {
-        for (int dz = -2; dz <= 2; dz++) {
-            int gx = center_gx + dx;
-            int gz = center_gz + dz;
-            
-            // Controlliamo che la cella rientri nei bordi 20x20
-            if (gx >= 0 && gx < 20 && gz >= 0 && gz < 20) {
-                double time_since_last = time_sim - last_visited[gx][gz];
-                
-                // TETTO MASSIMO (CAPPING): Evitiamo che il premio esplorativo 
-                // cresca all'infinito su 1000 secondi scavalcando la penalità dei bordi
-                // if (time_since_last > 50.0) time_since_last = 50.0;
-                
-                // Aggiungiamo un premio per la cella esplorata
-                reward += time_since_last * 0.02; // Bilanciato per le 25 celle (5x5)
-                
-                // Resettiamo il tempo di visita della cella
-                last_visited[gx][gz] = time_sim;
+    // Penalità Collisioni con altri droni
+    for (int i=0; i<num_drones; i++) {
+        if (all_drones[i].id != drone.id) {
+            double dist = sqrt(pow(drone.x - all_drones[i].x, 2) + pow(drone.y - all_drones[i].y, 2) + pow(drone.z - all_drones[i].z, 2));
+            if (dist < 4.0) {
+                penalty -= (4.0 - dist) * 20.0; // Forte penalità se si avvicinano troppo (meno di 4 metri)
             }
         }
     }
     
-    return reward;
+    return penalty; // Il reward è sempre <= 0
 }
 
 // Callback necessarie per inizializzare lo standard FMI
@@ -178,19 +148,16 @@ int run_worker(int worker_id) {
         // 5. SIMULAZIONE DELLA FISICA IN PARALLELO
         // Da questo punto in poi, i 50 Worker girano in parallelo al 100% senza interferirsi!
         fmi2Real time_sim = 0.1;
-        fmi2Real step_size = 0.1;
+        fmi2Real step_size = 0.1; // Ciclo di controllo a 0.1s
         fmi2Real stop_time = 150.0; // Aumentato da 60 a 150 per penalizzare i drift lenti
         
-        fmi2ValueReference vr_pos_x[] = {352, 353, 354, 355};
-        fmi2ValueReference vr_pos_y[] = {356, 357, 358, 359};
-        fmi2ValueReference vr_pos_z[] = {360, 361, 362, 363};
-        fmi2ValueReference vr_bat[]   = {172, 173, 174, 175};
+        fmi2ValueReference vr_pos_x[] = {328, 329, 330, 331};
+        fmi2ValueReference vr_pos_y[] = {332, 333, 334, 335};
+        fmi2ValueReference vr_pos_z[] = {336, 337, 338, 339};
         
-        fmi2Real pos_x[4], pos_y[4], pos_z[4], bat[4];
+        fmi2Real pos_x[4], pos_y[4], pos_z[4];
         fmi2Real known_pos_x[4] = {0}, known_pos_y[4] = {0}, known_pos_z[4] = {0};
-        fmi2Real last_ai_ux[4] = {0}, last_ai_uy[4] = {0}, last_ai_uz[4] = {0};
         double total_swarm_reward = 0.0;
-        int is_returning[4] = {0, 0, 0, 0};
         
         // Heatmap temporale per il Grid Coverage
         double last_visited[20][20];
@@ -215,69 +182,26 @@ int run_worker(int worker_id) {
             fmi2_getReal(instance, vr_pos_x, 4, pos_x);
             fmi2_getReal(instance, vr_pos_y, 4, pos_y);
             fmi2_getReal(instance, vr_pos_z, 4, pos_z);
-            fmi2_getReal(instance, vr_bat, 4, bat);
-
-            // Simula i messaggi tra i droni ogni mezzo secondo
-            if (fmod(time_sim, 0.5) < 0.05) { 
-                for (int i=0; i<4; i++) {
-                    if (((double)rand() / RAND_MAX) > 0.20) { // 20% Packet Loss
-                        known_pos_x[i] = pos_x[i];
-                        known_pos_y[i] = pos_y[i];
-                        known_pos_z[i] = pos_z[i];
-                    }
-                }
-
-                // Calcolo della predizione della Rete Neurale per le spinte
-                for (int i = 0; i < 4; i++) {
-                    const double BASES_X[4] = {0.0, 38.0, 38.0, 0.0};
-                    const double BASES_Y[4] = {-10.0, -10.0, -10.0, -10.0};
-                    const double BASES_Z[4] = {17.0, 17.0, -15.0, -15.0};
-                    
-                    double inputs[INPUT_SIZE];
-                    inputs[0] = pos_x[i] / 20.0;
-                    inputs[1] = pos_y[i] / 20.0; 
-                    inputs[2] = pos_z[i] / 10.0; 
-                    inputs[3] = 1.0; // NASCONDIAMO LA BATTERIA: evita l'overfitting temporale!
-                    
-                    double min_dist = 9999.0;
-                    for (int j = 0; j < 4; j++) {
-                        if (i != j) {
-                            double d = sqrt(pow(pos_x[i] - known_pos_x[j], 2) + 
-                                            pow(pos_y[i] - known_pos_y[j], 2) + 
-                                            pow(pos_z[i] - known_pos_z[j], 2));
-                            if (d < min_dist) min_dist = d;
-                        }
-                    }
-                    inputs[4] = min_dist / 40.0;
-                    inputs[5] = i / 3.0; 
-                    inputs[6] = (BASES_X[i] - pos_x[i]) / 40.0;
-                    inputs[7] = (BASES_Y[i] - pos_y[i]) / 40.0;
-                    inputs[8] = (BASES_Z[i] - pos_z[i]) / 10.0;
-
-                    double outputs[OUTPUT_SIZE];
-                    forward_pass(&candidate_nn, inputs, outputs);
-
-                    last_ai_ux[i] = outputs[0] * 15.0; // Velocità aumentata (era 10.0)
-                    last_ai_uy[i] = outputs[1] * 15.0;
-                    last_ai_uz[i] = outputs[2] * 15.0;
-                }
+            // Non leggiamo più la batteria, usiamo solo la fisica
+            
+            // Simula i messaggi e il controllore ad ogni step del simulatore
+            for (int i=0; i<4; i++) {
+                // Packet loss rimosso dal C (gestito da Modelica se necessario, o assente)
+                known_pos_x[i] = pos_x[i];
+                known_pos_y[i] = pos_y[i];
+                known_pos_z[i] = pos_z[i];
             }
 
             // Aggiorna lo stato dello sciame e accumula il punteggio (Reward)
             DroneState current_swarm[4];
             for (int i = 0; i < 4; i++) {
-                if (bat[i] < 20.0) is_returning[i] = 1;
-                else if (bat[i] > 80.0) is_returning[i] = 0;
-
                 current_swarm[i].id = i;
                 current_swarm[i].x = pos_x[i];
                 current_swarm[i].y = pos_y[i];
                 current_swarm[i].z = pos_z[i];
-                current_swarm[i].battery = bat[i];
-                current_swarm[i].ux = last_ai_ux[i];
-                current_swarm[i].uy = last_ai_uy[i];
-                current_swarm[i].uz = last_ai_uz[i];
-                current_swarm[i].is_broadcasting_return = is_returning[i];
+                current_swarm[i].ux = 0.0;
+                current_swarm[i].uy = 0.0;
+                current_swarm[i].uz = 0.0;
 
                 total_swarm_reward += getReward(current_swarm[i], current_swarm, 4, last_visited, time_sim);
             }

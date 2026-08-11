@@ -1,0 +1,54 @@
+EXPORTS
+  ;***************************************************
+  ;Common Functions
+  ;****************************************************
+  DroneSwarm_fmiGetTypesPlatform @1
+  DroneSwarm_fmiGetVersion @2
+  DroneSwarm_fmiSetDebugLogging @3
+  DroneSwarm_fmiInstantiate @4
+  DroneSwarm_fmiFreeInstance @5
+  DroneSwarm_fmiSetupExperiment @6
+  DroneSwarm_fmiEnterInitializationMode @7
+  DroneSwarm_fmiExitInitializationMode @8
+  DroneSwarm_fmiTerminate @9
+  DroneSwarm_fmiReset @10
+  DroneSwarm_fmiGetReal @11
+  DroneSwarm_fmiGetInteger @12
+  DroneSwarm_fmiGetBoolean @13
+  DroneSwarm_fmiGetString @14
+  DroneSwarm_fmiSetReal @15
+  DroneSwarm_fmiSetInteger @16
+  DroneSwarm_fmiSetBoolean @17
+  DroneSwarm_fmiSetString @18
+  DroneSwarm_fmiGetFMUstate @19
+  DroneSwarm_fmiSetFMUstate @20
+  DroneSwarm_fmiFreeFMUstate @21
+  DroneSwarm_fmiSerializedFMUstateSize @22
+  DroneSwarm_fmiSerializeFMUstate @23
+  DroneSwarm_fmiDeSerializeFMUstate @24
+  DroneSwarm_fmiGetDirectionalDerivative @25
+  ;***************************************************
+  ;Functions for FMI for Model Exchange
+  ;****************************************************
+  DroneSwarm_fmiEnterEventMode @26
+  DroneSwarm_fmiNewDiscreteStates @27
+  DroneSwarm_fmiEnterContinuousTimeMode @28
+  DroneSwarm_fmiCompletedIntegratorStep @29
+  DroneSwarm_fmiSetTime @30
+  DroneSwarm_fmiSetContinuousStates @31
+  DroneSwarm_fmiGetDerivatives @32
+  DroneSwarm_fmiGetEventIndicators @33
+  DroneSwarm_fmiGetContinuousStates @34
+  DroneSwarm_fmiGetNominalsOfContinuousStates @35
+  ;***************************************************
+  ;Functions for FMI for Co-Simulation
+  ;****************************************************
+  DroneSwarm_fmiSetRealInputDerivatives @36
+  DroneSwarm_fmiGetRealOutputDerivatives @37
+  DroneSwarm_fmiDoStep @38
+  DroneSwarm_fmiCancelStep @39
+  DroneSwarm_fmiGetStatus @40
+  DroneSwarm_fmiGetRealStatus @41
+  DroneSwarm_fmiGetIntegerStatus @42
+  DroneSwarm_fmiGetBooleanStatus @43
+  DroneSwarm_fmiGetStringStatus @44

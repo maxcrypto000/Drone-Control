@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 // Definiamo la topologia della rete
-#define INPUT_SIZE 9    // pos_x, pos_y, pos_z, batteria, dist_vicino, ID_drone, delta_x, delta_y, delta_z
+#define INPUT_SIZE 125  // Griglia Lidar 5x5x5
 #define HIDDEN_SIZE 10  // Numero di neuroni nello strato intermedio
 #define OUTPUT_SIZE 3   // Spinta sui tre assi (ux, uy, uz)
 
@@ -61,7 +61,7 @@ void forward_pass(NeuralNetwork* nn, double inputs[INPUT_SIZE], double outputs[O
     }
 }
 
-#define PARAM_COUNT 133 // Somma totale di pesi e bias (90 + 10 + 30 + 3)
+#define PARAM_COUNT 1293 // Somma totale di pesi e bias (1250 + 10 + 30 + 3)
 
 // Generatore di rumore gaussiano N(0, 1) tramite trasformata di Box-Muller
 double random_normal() {
@@ -115,3 +115,5 @@ void set_parameters(NeuralNetwork* nn, double* theta) {
         nn->b2[i] = theta[idx++];
     }
 }
+
+

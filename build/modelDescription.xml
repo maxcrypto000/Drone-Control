@@ -2,11 +2,11 @@
 <fmiModelDescription
   fmiVersion="2.0"
   modelName="DroneSwarm"
-  guid="{87abfe4b-fcb6-4ccc-8962-bd6d376216e3}"
+  guid="{abb1cdf9-7f9c-41ec-986d-ef94cea477b5}"
   description=""
   version=""
   generationTool="OpenModelica Compiler OpenModelica v1.27.0 (64-bit)"
-  generationDateAndTime="2026-08-05T15:35:08Z"
+  generationDateAndTime="2026-08-10T13:00:49Z"
   variableNamingConvention="structured"
   numberOfEventIndicators="8">
   <ModelExchange
@@ -6345,18 +6345,18 @@
       <Unknown index="30" dependencies="2 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
       <Unknown index="31" dependencies="3 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
       <Unknown index="32" dependencies="4 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="33" dependencies="1 5 9 13 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="34" dependencies="2 6 10 14 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="35" dependencies="3 7 11 15 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="36" dependencies="4 8 12 16 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="37" dependencies="1 5 9 13 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="38" dependencies="2 6 10 14 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="39" dependencies="3 7 11 15 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="40" dependencies="4 8 12 16 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="41" dependencies="1 5 9 13 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="42" dependencies="2 6 10 14 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="43" dependencies="3 7 11 15 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
-      <Unknown index="44" dependencies="4 8 12 16 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="33" dependencies="5 9 13 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="34" dependencies="6 10 14 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="35" dependencies="7 11 15 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="36" dependencies="8 12 16 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="37" dependencies="5 9 13 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="38" dependencies="6 10 14 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="39" dependencies="7 11 15 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="40" dependencies="8 12 16 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="41" dependencies="5 9 13 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="42" dependencies="6 10 14 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="43" dependencies="7 11 15 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="44" dependencies="8 12 16 17 18 19 20 21 22 23 24 25 26 27 28" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
       <Unknown index="45" dependencies="5" dependenciesKind="dependent" />
       <Unknown index="46" dependencies="6" dependenciesKind="dependent" />
       <Unknown index="47" dependencies="7" dependenciesKind="dependent" />

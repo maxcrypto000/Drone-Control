@@ -2,38 +2,42 @@
 #include <stdio.h>
 #include "best_weights.h"
 
-static double current_fmu_theta[133] = {0};
-static int theta_loaded_for_time = -1;
-static int use_fallback = 1;
+// Memoria locale dei pesi (viene letta dal file "weights.bin" all'avvio)
+static int weights_loaded = 0;
+static double local_weights[PARAM_COUNT];
+static NeuralNetwork drone_nn;
 
-void get_ai_thrust(double x, double y, double z, double bat, double min_dist, double drone_id, double delta_x, double delta_y, double delta_z, double current_time, double* ux, double* uy, double* uz) {
-    int current_time_ms = (int)(current_time * 1000.0);
-    static int last_time_ms = -1;
+// Funzione richiamata da OpenModelica
+void get_ai_thrust(double x, double y, double z,
+                   const double* swarm_x, const double* swarm_y, const double* swarm_z,
+                   const double* lidar_array, 
+                   double drone_id_real, 
+                   double current_time, 
+                   double* ux, double* uy, double* uz) {
     
-    // Se il tempo torna indietro (reset) o è la prima chiamata, ricarichiamo i pesi
-    if (current_time_ms < last_time_ms || last_time_ms == -1) {
-        FILE *f = fopen("C:\\Users\\maxbu\\Desktop\\uni\\Verifica e validazione s\\progetto\\controllore\\build\\weights.bin", "rb");
+    // Ricarichiamo i pesi ad ogni nuova simulazione (time == 0.0)
+    if (current_time <= 0.001) {
+        FILE *f = fopen("weights.bin", "rb");
         if (f) {
-            fread(current_fmu_theta, sizeof(double), 133, f);
+            fread(local_weights, sizeof(double), PARAM_COUNT, f);
             fclose(f);
-            use_fallback = 0;
+        } else {
+            // Se non trova il file (come nella GUI di OpenModelica), usa i pesi addestrati
+            for(int i=0; i<PARAM_COUNT; i++) local_weights[i] = best_theta[i];
         }
+        
+        set_parameters(&drone_nn, local_weights);
+        weights_loaded = 1;
     }
-    last_time_ms = current_time_ms;
 
-    NeuralNetwork nn;
-    if (use_fallback) {
-        set_parameters(&nn, best_theta);
-    } else {
-        set_parameters(&nn, current_fmu_theta);
-    }
+    double outputs[OUTPUT_SIZE];
     
-    // Normalizziamo le distanze relative alla base (il mondo è largo 40m e alto 10m)
-    double inputs[9] = {x/20.0, y/20.0, z/10.0, 1.0, min_dist/40.0, drone_id, delta_x/40.0, delta_y/40.0, delta_z/10.0};
-    double outputs[3];
-    forward_pass(&nn, inputs, outputs);
-    
-    *ux = outputs[0] * 15.0; // Velocità aumentata a 15.0
+    // L'unico input è il lidar (125 celle). Ignoriamo x, y, z e le posizioni degli altri
+    // perché l'IA deve usare solo la percezione locale.
+    forward_pass(&drone_nn, lidar_array, outputs);
+
+    // Mappiamo le uscite [-1, 1] a spinte fisiche. Aumentiamo la forza massima a 15.0 N
+    *ux = outputs[0] * 15.0;
     *uy = outputs[1] * 15.0;
     *uz = outputs[2] * 15.0;
 }
